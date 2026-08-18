@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://b7e5nyccqkbgb"]
 
+[ext_resource type="Script" uid="uid://bnc6ldjhrvqhd" path="res://scenes/main.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://bh6j15apj455i" path="res://scenes/pot.tscn" id="1_o5qli"]
 
 [node name="Control" type="Control" unique_id=1146181859]
@@ -9,6 +10,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_0wfyh")
 
-[node name="Pot" parent="." unique_id=2065538769 instance=ExtResource("1_o5qli")]
-layout_mode = 0
+[node name="PotGrid" type="GridContainer" parent="." unique_id=958704257]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+columns = 2
+
+[node name="Pot" parent="PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Pot2" parent="PotGrid" unique_id=864991819 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Pot3" parent="PotGrid" unique_id=41359023 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Pot4" parent="PotGrid" unique_id=104301383 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Pot5" parent="PotGrid" unique_id=513489353 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Pot6" parent="PotGrid" unique_id=1623546161 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+size_flags_horizontal = 6
