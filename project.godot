@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Windowsill"
+run/main_scene="uid://b7e5nyccqkbgb"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
