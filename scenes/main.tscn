@@ -12,18 +12,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0wfyh")
 
-[node name="PotGrid" type="GridContainer" parent="." unique_id=958704257]
+[node name="PotGrid" type="HBoxContainer" parent="." unique_id=359358806]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -76.0
-offset_bottom = 76.0
+offset_top = -24.0
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-columns = 2
+theme_override_constants/separation = 5
+alignment = 1
 
 [node name="Pot" parent="PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
 layout_mode = 2
@@ -50,9 +51,13 @@ layout_mode = 2
 size_flags_horizontal = 6
 
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_constants/h_separation = 90
+columns = 3
 
 [node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
 layout_mode = 2
@@ -61,6 +66,10 @@ text = "Day:"
 [node name="CoinLabel" type="Label" parent="HeaderUI" unique_id=1951511272]
 layout_mode = 2
 text = "Coins: "
+
+[node name="ActionBudget" type="Label" parent="HeaderUI" unique_id=442201992]
+layout_mode = 2
+text = "Actions:"
 
 [node name="ActionButtonsContainer" type="GridContainer" parent="." unique_id=2053740944]
 layout_mode = 1
