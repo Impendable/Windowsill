@@ -12,28 +12,33 @@ const SELL_PRICE := 10
 var state: State = State.EMPTY
 var growth_counter: int
 
-func _ready() -> void:
-	main_path.next_day.connect(advance_day)
-
 func _on_pressed() -> void:
 	tapped.emit(self)
 
 func advance_day():
-	growth_counter += 1
-	if growth_counter == GROWTH_DAYS:
+	if state == State.GROWING:
+		growth_counter += 1
+	if growth_counter >= GROWTH_DAYS:
 		growth_counter = 0
 		state = State.READY
+	_refresh()
 
 func interact():
 	match state:
-		"EMPTY":
+		State.EMPTY:
 			print("Planting...")
 			state = State.GROWING
-		"READY":
+			_refresh()
+			return 0
+		State.READY:
 			print("Harvesting...")
 			state = State.EMPTY
-		"GROWING":
+			_refresh()
+			return SELL_PRICE
+		State.EMPTY:
 			print("Plant is growing!")
+			_refresh()
+			return 0
 	
 func _refresh():
 	self.text = State.keys()[state]
