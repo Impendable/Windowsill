@@ -56,20 +56,26 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 50.0
 grow_horizontal = 2
-theme_override_constants/h_separation = 90
+theme_override_constants/h_separation = 75
 columns = 3
 
 [node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
 layout_mode = 2
 text = "Day:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CoinLabel" type="Label" parent="HeaderUI" unique_id=1951511272]
 layout_mode = 2
 text = "Coins: "
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ActionBudget" type="Label" parent="HeaderUI" unique_id=442201992]
 layout_mode = 2
 text = "Actions:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ActionButtonsContainer" type="GridContainer" parent="." unique_id=2053740944]
 layout_mode = 1

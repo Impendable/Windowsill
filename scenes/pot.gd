@@ -2,7 +2,7 @@ class_name Pot
 extends Button
 
 signal tapped(pot: Pot)
-signal harvested(pot: Pot)
+signal harvested(amount: int)
 
 enum State { EMPTY, GROWING, READY }
 enum Result { NONE, PLANTED, HARVESTED }
@@ -10,7 +10,6 @@ const GROWTH_DAYS := 3
 const SELL_PRICE := 10
 
 var state: State = State.EMPTY
-var result: Result = Result.NONE
 
 var growth_counter: int
 
@@ -25,20 +24,18 @@ func advance_day() -> void:
 			state = State.READY
 	_refresh()
 
-func interact() -> int:
+func interact() -> Result:
+	var result := Result.NONE
 	match state:
 		State.EMPTY:
-			print("Planting...")
 			state = State.GROWING
 			result = Result.PLANTED
 		State.READY:
-			print("Harvesting...")
-			harvested.emit(self, SELL_PRICE)
+			harvested.emit(SELL_PRICE)
 			state = State.EMPTY
 			result = Result.HARVESTED
 		State.GROWING:
-			print("Plant is growing!")
-			result = Result.NONE
+			pass
 	_refresh()
 	return result
 
