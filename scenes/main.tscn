@@ -108,7 +108,7 @@ offset_top = -48.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="NextDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
+[node name="EndDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
 text = "Next Day"
@@ -158,7 +158,7 @@ custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
 text = "+1 Action Per Day (150)"
 
-[node name="EndDay" type="Button" parent="ShopScreen" unique_id=138337985]
+[node name="StartDay" type="Button" parent="ShopScreen" unique_id=138337985]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 1
 anchors_preset = 3
@@ -172,7 +172,7 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "End Day"
 
-[connection signal="pressed" from="DayScreen/ActionButtonsContainer/NextDay" to="." method="_on_next_day_pressed"]
+[connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/ExtraPot" to="." method="_on_extra_pot_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="." method="_on_plus_action_pressed"]
-[connection signal="pressed" from="ShopScreen/EndDay" to="." method="_on_end_day_pressed"]
+[connection signal="pressed" from="ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
