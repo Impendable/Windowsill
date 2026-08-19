@@ -7,4 +7,5 @@ script = ExtResource("1_6nf72")
 display_name = "Oregano"
 growth_days = 6
 sell_price = 45
+seed_cost = 30
 metadata/_custom_type_script = "uid://cy5r4u17awyw6"

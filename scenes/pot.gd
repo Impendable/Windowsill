@@ -23,11 +23,11 @@ func advance_day() -> void:
 			state = State.READY
 	_refresh()
 
-func interact(seed: PlantType) -> Result:
+func interact(seed_type: PlantType) -> Result:
 	var result := Result.NONE
 	match state:
 		State.EMPTY:
-			plant = seed
+			plant = seed_type
 			state = State.GROWING
 			result = Result.PLANTED
 			print("%s has been planted" % plant.display_name)

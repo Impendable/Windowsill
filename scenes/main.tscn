@@ -15,10 +15,50 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0wfyh")
-plant_seed = ExtResource("2_sugp2")
 available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("4_o6xl0"), ExtResource("5_tipki")])
+selected_seed = ExtResource("2_sugp2")
 
-[node name="PotGrid" type="HBoxContainer" parent="." unique_id=359358806]
+[node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_constants/h_separation = 75
+columns = 3
+
+[node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Day:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CoinLabel" type="Label" parent="HeaderUI" unique_id=1951511272]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Coins: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActionBudget" type="Label" parent="HeaderUI" unique_id=442201992]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Actions:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DayScreen" type="Control" parent="." unique_id=786769554]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -32,72 +72,107 @@ mouse_filter = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="Pot" parent="PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
+[node name="Pot" parent="DayScreen/PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Pot2" parent="PotGrid" unique_id=864991819 instance=ExtResource("1_o5qli")]
+[node name="Pot2" parent="DayScreen/PotGrid" unique_id=864991819 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Pot3" parent="PotGrid" unique_id=41359023 instance=ExtResource("1_o5qli")]
+[node name="Pot3" parent="DayScreen/PotGrid" unique_id=41359023 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Pot4" parent="PotGrid" unique_id=104301383 instance=ExtResource("1_o5qli")]
+[node name="Pot4" parent="DayScreen/PotGrid" unique_id=104301383 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Pot5" parent="PotGrid" unique_id=513489353 instance=ExtResource("1_o5qli")]
+[node name="Pot5" parent="DayScreen/PotGrid" unique_id=513489353 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Pot6" parent="PotGrid" unique_id=1623546161 instance=ExtResource("1_o5qli")]
+[node name="Pot6" parent="DayScreen/PotGrid" unique_id=1623546161 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_constants/h_separation = 75
-columns = 3
-
-[node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
-layout_mode = 2
-text = "Day:"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CoinLabel" type="Label" parent="HeaderUI" unique_id=1951511272]
-layout_mode = 2
-text = "Coins: "
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ActionBudget" type="Label" parent="HeaderUI" unique_id=442201992]
-layout_mode = 2
-text = "Actions:"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ActionButtonsContainer" type="GridContainer" parent="." unique_id=2053740944]
+[node name="ActionButtonsContainer" type="GridContainer" parent="DayScreen" unique_id=2053740944]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -40.0
-offset_top = -40.0
+offset_left = -79.0
+offset_top = -48.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="NextDay" type="Button" parent="ActionButtonsContainer" unique_id=30715834]
+[node name="NextDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
 text = "Next Day"
 
-[connection signal="pressed" from="ActionButtonsContainer/NextDay" to="." method="_on_next_day_pressed"]
+[node name="ShopScreen" type="Control" parent="." unique_id=527266103]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SeedList" type="HBoxContainer" parent="ShopScreen" unique_id=237327694]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 49.0
+offset_bottom = -327.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UpgradeList" type="HBoxContainer" parent="ShopScreen" unique_id=735783086]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 300.0
+offset_bottom = -61.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ExtraPot" type="Button" parent="ShopScreen/UpgradeList" unique_id=854461268]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+custom_maximum_size = Vector2(-1, 50)
+layout_mode = 2
+text = "Extra Pot (75)"
+
+[node name="PlusAction" type="Button" parent="ShopScreen/UpgradeList" unique_id=384753460]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+custom_maximum_size = Vector2(-1, 50)
+layout_mode = 2
+text = "+1 Action Per Day (150)"
+
+[node name="EndDay" type="Button" parent="ShopScreen" unique_id=138337985]
+custom_minimum_size = Vector2(75, 48)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "End Day"
+
+[connection signal="pressed" from="DayScreen/ActionButtonsContainer/NextDay" to="." method="_on_next_day_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/ExtraPot" to="." method="_on_extra_pot_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="." method="_on_plus_action_pressed"]
+[connection signal="pressed" from="ShopScreen/EndDay" to="." method="_on_end_day_pressed"]
