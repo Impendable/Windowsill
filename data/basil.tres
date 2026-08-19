@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlantType" format=3 uid="uid://bitxb5xb2q4ni"]
+
+[ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="1_upsdo"]
+
+[resource]
+script = ExtResource("1_upsdo")
+display_name = "Basil"
+growth_days = 2
+sell_price = 8
+metadata/_custom_type_script = "uid://cy5r4u17awyw6"

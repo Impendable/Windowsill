@@ -6,9 +6,8 @@ signal harvested(amount: int)
 
 enum State { EMPTY, GROWING, READY }
 enum Result { NONE, PLANTED, HARVESTED }
-const GROWTH_DAYS := 3
-const SELL_PRICE := 10
 
+var plant: PlantType
 var state: State = State.EMPTY
 
 var growth_counter: int
@@ -16,28 +15,32 @@ var growth_counter: int
 func _on_pressed() -> void:
 	tapped.emit(self)
 
-func advance_day() -> void:
+func advance_day(plant) -> void:
 	if state == State.GROWING:
 		growth_counter += 1
-		if growth_counter >= GROWTH_DAYS:
+		if growth_counter >= plant.growth_days:
 			growth_counter = 0
 			state = State.READY
 	_refresh()
 
-func interact() -> Result:
+func interact(plant) -> Result:
 	var result := Result.NONE
 	match state:
 		State.EMPTY:
 			state = State.GROWING
 			result = Result.PLANTED
+			print("%s has been planted" % plant.display_name)
 		State.READY:
-			harvested.emit(SELL_PRICE)
+			harvested.emit(plant.sell_price)
+			print("%s has been harvested" % plant.display_name)
 			state = State.EMPTY
 			result = Result.HARVESTED
+			plant = null
 		State.GROWING:
-			pass
+			print("Plant: %s Current growth: %s/%s" % [plant.display_name, growth_counter, plant.growth_days])
 	_refresh()
 	return result
 
 func _refresh() -> void:
 	self.text = State.keys()[state]
+	
