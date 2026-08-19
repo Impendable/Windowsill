@@ -4,6 +4,7 @@ const POT_SCENE := preload("res://scenes/pot.tscn")
 const STARTER_SEED := preload("res://data/basil.tres")
 const BASE_ACTIONS_PER_DAY := 5
 const BASE_GROWTH_RATE := 1
+const STARTING_COINS := 0
 
 
 @export var available_plants: Array[PlantType]
@@ -18,12 +19,11 @@ enum Screen { DAY, SHOP }
 
 var current_screen: Screen = Screen.DAY
 var current_day := 1
-var current_coins := 200
+var current_coins := STARTING_COINS
 var actions_per_day := BASE_ACTIONS_PER_DAY
 var remaining_actions := BASE_ACTIONS_PER_DAY
 var has_growth_speed := false
 var has_extra_action := false
-var growth_rate := BASE_GROWTH_RATE
 
 func _ready() -> void:
 	#Check all pots in scene for any signals
@@ -46,6 +46,8 @@ func change_screen(screen: Screen) -> void:
 	_refresh()
 
 func _refresh() -> void:
+	if selected_seed.seed_cost > current_coins:
+		selected_seed = STARTER_SEED
 	header.update(current_day, current_coins, remaining_actions)
 	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
 
@@ -53,11 +55,6 @@ func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
 	if remaining_actions <= 0:
 		print("No actions remaining")
-		return
-	#Planting costs coins, Harvesting doesn't
-	if pot.state == Pot.State.EMPTY and current_coins < selected_seed.seed_cost:
-		print("Not enough money, switching to Basil!")
-		selected_seed = STARTER_SEED
 		return
 	match pot.interact(selected_seed):
 		Pot.Result.PLANTED:
@@ -75,7 +72,7 @@ func _on_end_day_pressed() -> void:
 func _on_start_day_pressed() -> void:
 	current_day += 1
 	for pot: Pot in pot_grid.get_children():
-		pot.advance_day(growth_rate)
+		pot.advance_day(growing_rate())
 	remaining_actions = actions_per_day
 	change_screen(Screen.DAY)
 
@@ -92,7 +89,6 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 				return
 			current_coins -= ShopScreen.GROWTH_SPEED_COST
 			has_growth_speed = true
-			growth_rate = 2
 			
 		ShopScreen.Upgrade.EXTRA_ACTION:
 			if has_extra_action or current_coins < ShopScreen.EXTRA_ACTION_COST:
@@ -106,3 +102,6 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 func _sell_plant(amount: int) -> void:
 	current_coins += amount
 	_refresh()
+	
+func growing_rate() -> int:
+	return BASE_GROWTH_RATE + 1 if has_growth_speed else 1

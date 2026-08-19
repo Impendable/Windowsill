@@ -79,13 +79,13 @@ alignment = 1
 [node name="Pot" parent="DayScreen/PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
+[node name="Pot2" parent="DayScreen/PotGrid" unique_id=1628297709 instance=ExtResource("1_o5qli")]
+layout_mode = 2
+
 [node name="Pot3" parent="DayScreen/PotGrid" unique_id=2103562324 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
 [node name="Pot4" parent="DayScreen/PotGrid" unique_id=1718407994 instance=ExtResource("1_o5qli")]
-layout_mode = 2
-
-[node name="Pot5" parent="DayScreen/PotGrid" unique_id=1628297709 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
 [node name="ActionButtonsContainer" type="GridContainer" parent="DayScreen" unique_id=2053740944]
