@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_upsdo")
 display_name = "Basil"
-growth_days = 2
-sell_price = 3
+growth_days = 1
+sell_price = 4
 metadata/_custom_type_script = "uid://cy5r4u17awyw6"

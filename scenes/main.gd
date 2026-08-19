@@ -5,6 +5,8 @@ const STARTER_SEED := preload("res://data/basil.tres")
 const BASE_ACTIONS_PER_DAY := 5
 const BASE_GROWTH_RATE := 1
 const STARTING_COINS := 0
+const STARTING_DAY := 1
+const RUN_LENGTH := 7
 
 
 @export var available_plants: Array[PlantType]
@@ -14,11 +16,13 @@ const STARTING_COINS := 0
 @onready var shop: ShopScreen = %ShopScreen
 @onready var pot_grid: HBoxContainer = %PotGrid
 @onready var day_screen: Control = %DayScreen
+@onready var summary_screen: Control = %SummaryScreen
+@onready var score: Label = $SummaryScreen/VBoxContainer/Score
 
-enum Screen { DAY, SHOP }
+enum Screen { DAY, SHOP, SUMMARY }
 
 var current_screen: Screen = Screen.DAY
-var current_day := 1
+var current_day := STARTING_DAY
 var current_coins := STARTING_COINS
 var actions_per_day := BASE_ACTIONS_PER_DAY
 var remaining_actions := BASE_ACTIONS_PER_DAY
@@ -34,6 +38,7 @@ func _ready() -> void:
 	shop.build(available_plants)
 	change_screen(Screen.DAY)
 
+
 func _connect_pot(pot: Pot) -> void:
 	pot.tapped.connect(_on_pot_tapped)
 	pot.harvested.connect(_sell_plant)
@@ -43,13 +48,16 @@ func change_screen(screen: Screen) -> void:
 	current_screen = screen
 	day_screen.visible = current_screen == Screen.DAY
 	shop.visible = current_screen == Screen.SHOP
+	summary_screen.visible = current_screen == Screen.SUMMARY
 	_refresh()
+
 
 func _refresh() -> void:
 	if selected_seed.seed_cost > current_coins:
 		selected_seed = STARTER_SEED
-	header.update(current_day, current_coins, remaining_actions)
+	header.update(current_day, RUN_LENGTH, current_coins, remaining_actions)
 	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
+
 
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
@@ -66,7 +74,11 @@ func _on_pot_tapped(pot: Pot) -> void:
 
 
 func _on_end_day_pressed() -> void:
-	change_screen(Screen.SHOP)
+	if current_day != RUN_LENGTH:
+		change_screen(Screen.SHOP)
+	else:
+		score.text = "Score: %d" % calc_score()
+		change_screen(Screen.SUMMARY)
 
 
 func _on_start_day_pressed() -> void:
@@ -102,6 +114,24 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 func _sell_plant(amount: int) -> void:
 	current_coins += amount
 	_refresh()
-	
+
+
 func growing_rate() -> int:
 	return BASE_GROWTH_RATE + 1 if has_growth_speed else 1
+
+
+func _start_new_run() -> void:
+	current_coins = STARTING_COINS
+	current_day = STARTING_DAY
+	remaining_actions = BASE_ACTIONS_PER_DAY
+	has_growth_speed = false
+	has_extra_action = false
+	selected_seed = STARTER_SEED
+	
+func calc_score() -> int:
+	var current_growth_cost := 0
+	for pot: Pot in pot_grid.get_children():
+		for plant: PlantType in pot:
+			@warning_ignore("integer_division")
+			current_growth_cost = current_growth_cost + plant.seed_cost / 2
+	return current_coins + current_growth_cost

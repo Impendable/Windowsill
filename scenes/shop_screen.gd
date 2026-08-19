@@ -24,6 +24,7 @@ func build(plants: Array[PlantType]) -> void:
 		seed_list.add_child(button)
 		seed_buttons[plant] = button
 
+
 func refresh(coins: int, owns_speed: bool, owns_action: bool, selected: PlantType) -> void:
 	for plant: PlantType in seed_buttons:
 		var button: Button = seed_buttons[plant]
@@ -31,7 +32,8 @@ func refresh(coins: int, owns_speed: bool, owns_action: bool, selected: PlantTyp
 		button.button_pressed = plant == selected
 	growth_speed_button.disabled = owns_speed or coins < GROWTH_SPEED_COST
 	plus_action_button.disabled = owns_action or coins < EXTRA_ACTION_COST
-	
+
+
 func _on_seed_button_pressed(plant: PlantType) -> void:
 	seed_selected.emit(plant)
 

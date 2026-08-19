@@ -15,6 +15,7 @@ var growth_counter: int
 func _on_pressed() -> void:
 	tapped.emit(self)
 
+
 func advance_day(growth_per_day: int = 1) -> void:
 	if state == State.GROWING:
 		growth_counter += growth_per_day
@@ -22,6 +23,7 @@ func advance_day(growth_per_day: int = 1) -> void:
 			growth_counter = 0
 			state = State.READY
 	_refresh()
+
 
 func interact(seed_type: PlantType) -> Result:
 	var result := Result.NONE
@@ -43,6 +45,7 @@ func interact(seed_type: PlantType) -> Result:
 	_refresh()
 	return result
 
+
 func _refresh() -> void:
 	match state:
 		State.EMPTY:
@@ -51,4 +54,7 @@ func _refresh() -> void:
 			text = "%s %d/%d" % [plant.display_name, growth_counter, plant.growth_days]
 		State.READY:
 			text = "%s ready!" % plant.display_name
-	
+
+
+func reset() -> void:
+	state = State.EMPTY
