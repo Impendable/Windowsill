@@ -15,7 +15,7 @@ var growth_counter: int
 func _on_pressed() -> void:
 	tapped.emit(self)
 
-func advance_day(plant) -> void:
+func advance_day() -> void:
 	if state == State.GROWING:
 		growth_counter += 1
 		if growth_counter >= plant.growth_days:
@@ -23,24 +23,32 @@ func advance_day(plant) -> void:
 			state = State.READY
 	_refresh()
 
-func interact(plant) -> Result:
+func interact(seed: PlantType) -> Result:
 	var result := Result.NONE
 	match state:
 		State.EMPTY:
+			plant = seed
 			state = State.GROWING
 			result = Result.PLANTED
 			print("%s has been planted" % plant.display_name)
 		State.READY:
 			harvested.emit(plant.sell_price)
-			print("%s has been harvested" % plant.display_name)
+			print("%s has been harvested" % plant.display_name)	
+			plant = null
 			state = State.EMPTY
 			result = Result.HARVESTED
-			plant = null
+		
 		State.GROWING:
 			print("Plant: %s Current growth: %s/%s" % [plant.display_name, growth_counter, plant.growth_days])
 	_refresh()
 	return result
 
 func _refresh() -> void:
-	self.text = "Plant: %s, State: %s" % [plant.display_name, State.keys()[state]]
+	match state:
+		State.EMPTY:
+			text = "Empty"
+		State.GROWING:
+			text = "%s %d/%d" % [plant.display_name, growth_counter, plant.growth_days]
+		State.READY:
+			text = "%s ready!" % plant.display_name
 	

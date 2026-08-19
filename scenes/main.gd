@@ -8,13 +8,12 @@ extends Control
 const ACTIONS_PER_DAY := 5
 var current_day := 1
 var current_coins := 0
-var remaining_actions = ACTIONS_PER_DAY
+var remaining_actions := ACTIONS_PER_DAY
 
 func _ready() -> void:
 	for pot: Pot in pot_grid.get_children():
 		pot.tapped.connect(_on_pot_tapped)
 		pot.harvested.connect(_sell_plant)
-	remaining_actions = ACTIONS_PER_DAY
 	_refresh_header()
 
 
@@ -32,7 +31,7 @@ func _on_next_day_pressed() -> void:
 	current_day += 1
 	#Each pot needs to advance it's state based on growth rate
 	for pot: Pot in pot_grid.get_children():
-		pot.advance_day(plant_seed)
+		pot.advance_day()
 	#Reset remaining days
 	remaining_actions = ACTIONS_PER_DAY
 	_refresh_header()
