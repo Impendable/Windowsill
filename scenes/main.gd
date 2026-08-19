@@ -1,7 +1,10 @@
 extends Control
 
 const POT_SCENE := preload("res://scenes/pot.tscn")
+const STARTER_SEED := preload("res://data/basil.tres")
 const BASE_ACTIONS_PER_DAY := 5
+const BASE_GROWTH_RATE := 1
+
 
 @export var available_plants: Array[PlantType]
 @export var selected_seed: PlantType
@@ -15,12 +18,12 @@ enum Screen { DAY, SHOP }
 
 var current_screen: Screen = Screen.DAY
 var current_day := 1
-var current_coins := 0
+var current_coins := 200
 var actions_per_day := BASE_ACTIONS_PER_DAY
 var remaining_actions := BASE_ACTIONS_PER_DAY
-var has_extra_pot := false
+var has_growth_speed := false
 var has_extra_action := false
-
+var growth_rate := BASE_GROWTH_RATE
 
 func _ready() -> void:
 	#Check all pots in scene for any signals
@@ -44,7 +47,7 @@ func change_screen(screen: Screen) -> void:
 
 func _refresh() -> void:
 	header.update(current_day, current_coins, remaining_actions)
-	shop.refresh(current_coins, has_extra_pot, has_extra_action, selected_seed)
+	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
 
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
@@ -53,7 +56,8 @@ func _on_pot_tapped(pot: Pot) -> void:
 		return
 	#Planting costs coins, Harvesting doesn't
 	if pot.state == Pot.State.EMPTY and current_coins < selected_seed.seed_cost:
-		print("Not enough coins")
+		print("Not enough money, switching to Basil!")
+		selected_seed = STARTER_SEED
 		return
 	match pot.interact(selected_seed):
 		Pot.Result.PLANTED:
@@ -71,7 +75,7 @@ func _on_end_day_pressed() -> void:
 func _on_start_day_pressed() -> void:
 	current_day += 1
 	for pot: Pot in pot_grid.get_children():
-		pot.advance_day()
+		pot.advance_day(growth_rate)
 	remaining_actions = actions_per_day
 	change_screen(Screen.DAY)
 
@@ -83,14 +87,13 @@ func _on_seed_selected(plant: PlantType) -> void:
 
 func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 	match upgrade:
-		ShopScreen.Upgrade.EXTRA_POT:
-			if has_extra_pot or current_coins < ShopScreen.EXTRA_POT_COST:
+		ShopScreen.Upgrade.GROWTH_SPEED_UP:
+			if has_growth_speed or current_coins < ShopScreen.GROWTH_SPEED_COST:
 				return
-			current_coins -= ShopScreen.EXTRA_POT_COST
-			has_extra_pot = true
-			var new_pot: Pot = POT_SCENE.instantiate()
-			pot_grid.add_child(new_pot)
-			_connect_pot(new_pot)
+			current_coins -= ShopScreen.GROWTH_SPEED_COST
+			has_growth_speed = true
+			growth_rate = 2
+			
 		ShopScreen.Upgrade.EXTRA_ACTION:
 			if has_extra_action or current_coins < ShopScreen.EXTRA_ACTION_COST:
 				return

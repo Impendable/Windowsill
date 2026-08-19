@@ -15,9 +15,9 @@ var growth_counter: int
 func _on_pressed() -> void:
 	tapped.emit(self)
 
-func advance_day() -> void:
+func advance_day(growth_per_day: int = 1) -> void:
 	if state == State.GROWING:
-		growth_counter += 1
+		growth_counter += growth_per_day
 		if growth_counter >= plant.growth_days:
 			growth_counter = 0
 			state = State.READY

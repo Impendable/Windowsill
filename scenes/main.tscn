@@ -137,12 +137,12 @@ offset_bottom = -61.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ExtraPot" type="Button" parent="ShopScreen/UpgradeList" unique_id=854461268]
+[node name="GrowthSpeed" type="Button" parent="ShopScreen/UpgradeList" unique_id=854461268]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
-text = "Extra Pot (75)"
+text = "Growth Speed Up (75)"
 
 [node name="PlusAction" type="Button" parent="ShopScreen/UpgradeList" unique_id=384753460]
 unique_name_in_owner = true
@@ -166,6 +166,6 @@ grow_vertical = 0
 text = "Start Day"
 
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/ExtraPot" to="ShopScreen" method="_on_extra_pot_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/GrowthSpeed" to="ShopScreen" method="_on_growth_speed_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="ShopScreen" method="_on_plus_action_pressed"]
 [connection signal="pressed" from="ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
