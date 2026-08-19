@@ -42,5 +42,5 @@ func interact(plant) -> Result:
 	return result
 
 func _refresh() -> void:
-	self.text = State.keys()[state]
+	self.text = "Plant: %s, State: %s" % [plant.display_name, State.keys()[state]]
 	
