@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="3_tefeu"]
 [ext_resource type="Resource" uid="uid://be168d4tejwkp" path="res://data/oregano.tres" id="4_o6xl0"]
 [ext_resource type="Resource" uid="uid://05227ff5wk6y" path="res://data/parsley.tres" id="5_tipki"]
+[ext_resource type="Script" uid="uid://dajjw203hlukx" path="res://scenes/header_ui.gd" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://cdntua5y31ex4" path="res://scenes/shop_screen.gd" id="8_tipki"]
 
 [node name="Main" type="Control" unique_id=1146181859]
 layout_mode = 3
@@ -19,6 +21,7 @@ available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtRes
 selected_seed = ExtResource("2_sugp2")
 
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -26,6 +29,7 @@ offset_bottom = 50.0
 grow_horizontal = 2
 theme_override_constants/h_separation = 75
 columns = 3
+script = ExtResource("6_o6xl0")
 
 [node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
 unique_name_in_owner = true
@@ -64,37 +68,25 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -24.0
-offset_bottom = 24.0
+offset_top = -37.0
+offset_bottom = 45.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Pot" parent="DayScreen/PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
 layout_mode = 2
-size_flags_horizontal = 6
 
-[node name="Pot2" parent="DayScreen/PotGrid" unique_id=864991819 instance=ExtResource("1_o5qli")]
+[node name="Pot3" parent="DayScreen/PotGrid" unique_id=2103562324 instance=ExtResource("1_o5qli")]
 layout_mode = 2
-size_flags_horizontal = 6
 
-[node name="Pot3" parent="DayScreen/PotGrid" unique_id=41359023 instance=ExtResource("1_o5qli")]
+[node name="Pot4" parent="DayScreen/PotGrid" unique_id=1718407994 instance=ExtResource("1_o5qli")]
 layout_mode = 2
-size_flags_horizontal = 6
 
-[node name="Pot4" parent="DayScreen/PotGrid" unique_id=104301383 instance=ExtResource("1_o5qli")]
+[node name="Pot5" parent="DayScreen/PotGrid" unique_id=1628297709 instance=ExtResource("1_o5qli")]
 layout_mode = 2
-size_flags_horizontal = 6
-
-[node name="Pot5" parent="DayScreen/PotGrid" unique_id=513489353 instance=ExtResource("1_o5qli")]
-layout_mode = 2
-size_flags_horizontal = 6
-
-[node name="Pot6" parent="DayScreen/PotGrid" unique_id=1623546161 instance=ExtResource("1_o5qli")]
-layout_mode = 2
-size_flags_horizontal = 6
 
 [node name="ActionButtonsContainer" type="GridContainer" parent="DayScreen" unique_id=2053740944]
 layout_mode = 1
@@ -111,7 +103,7 @@ grow_vertical = 0
 [node name="EndDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
-text = "Next Day"
+text = "End Day"
 
 [node name="ShopScreen" type="Control" parent="." unique_id=527266103]
 unique_name_in_owner = true
@@ -122,6 +114,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("8_tipki")
 
 [node name="SeedList" type="HBoxContainer" parent="ShopScreen" unique_id=237327694]
 unique_name_in_owner = true
@@ -170,9 +163,9 @@ offset_left = -8.0
 offset_top = -8.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "End Day"
+text = "Start Day"
 
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/ExtraPot" to="." method="_on_extra_pot_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="." method="_on_plus_action_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/ExtraPot" to="ShopScreen" method="_on_extra_pot_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="ShopScreen" method="_on_plus_action_pressed"]
 [connection signal="pressed" from="ShopScreen/StartDay" to="." method="_on_start_day_pressed"]

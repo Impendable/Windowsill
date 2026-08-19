@@ -5,17 +5,22 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7x0ad"]
 
 [node name="Pot" type="Button" unique_id=2065538769]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(80, 80)
 offset_right = 8.0
 offset_bottom = 8.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+icon_alignment = 2
+expand_icon = true
 script = ExtResource("1_xu6wc")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1320116761]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = SubResource("PlaceholderTexture2D_7x0ad")
+expand_mode = 2
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
