@@ -58,3 +58,18 @@ func _refresh() -> void:
 
 func reset() -> void:
 	state = State.EMPTY
+
+
+func to_dict() -> Dictionary:
+	return {
+		"plant_id": plant.id if plant != null else "",
+		"state": state,
+		"growth_counter": growth_counter,
+	}
+
+
+func from_dict(data: Dictionary, plants_by_id: Dictionary) -> void:
+	plant = plants_by_id.get(data.get("plant_id", ""))
+	state = int(data.get("state", State.EMPTY))
+	growth_counter = int(data.get("growth_counter", 0))
+	_refresh()

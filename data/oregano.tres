@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_6nf72")
+id = 2
 display_name = "Oregano"
 growth_days = 3
 sell_price = 45

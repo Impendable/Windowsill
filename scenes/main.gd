@@ -1,5 +1,7 @@
 extends Control
 
+const SAVE_PATH := "user://save.json"
+const SAVE_VERSION := 1
 const POT_SCENE := preload("res://scenes/pot.tscn")
 const STARTER_SEED := preload("res://data/basil.tres")
 const BASE_ACTIONS_PER_DAY := 5
@@ -17,7 +19,6 @@ const RUN_LENGTH := 7
 @onready var summary: SummaryScreen = %SummaryScreen
 @onready var pot_grid: HBoxContainer = %PotGrid
 @onready var day_screen: Control = %DayScreen
-@onready var summary_screen: Control = %SummaryScreen
 
 enum Screen { DAY, SHOP, SUMMARY }
 
@@ -29,15 +30,29 @@ var remaining_actions := BASE_ACTIONS_PER_DAY
 var has_growth_speed := false
 var has_extra_action := false
 var best_score: int
+var plants_by_id := {}
 
 func _ready() -> void:
+	#Lookup plants for load prep
+	for plant: PlantType in available_plants:
+		plants_by_id[plant.id] = plant
+	
 	#Check all pots in scene for any signals
 	for pot: Pot in pot_grid.get_children():
 		_connect_pot(pot)
+		
+	#Connect all signals
 	shop.seed_selected.connect(_on_seed_selected)
 	shop.upgrade_requested.connect(_on_upgrade_requested)
+	
+	#Build Shop with all plants
 	shop.build(available_plants)
-	change_screen(Screen.DAY)
+	
+	#Set screen to starting screen
+	if load_game():
+		change_screen(Screen.DAY)
+	else:
+		_start_new_run()
 
 
 func _connect_pot(pot: Pot) -> void:
@@ -49,7 +64,7 @@ func change_screen(screen: Screen) -> void:
 	current_screen = screen
 	day_screen.visible = current_screen == Screen.DAY
 	shop.visible = current_screen == Screen.SHOP
-	summary_screen.visible = current_screen == Screen.SUMMARY
+	summary.visible = current_screen == Screen.SUMMARY
 	_refresh()
 
 
@@ -59,6 +74,7 @@ func _refresh() -> void:
 	header.update(current_day, RUN_LENGTH, current_coins, remaining_actions)
 	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
 	summary.update(calc_score(), best_score)
+
 
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
@@ -75,11 +91,13 @@ func _on_pot_tapped(pot: Pot) -> void:
 
 
 func _on_end_day_pressed() -> void:
-	if current_day != RUN_LENGTH:
+	save_game()
+	if current_day < RUN_LENGTH:
 		change_screen(Screen.SHOP)
 	else:
 		if calc_score() > best_score:
 			best_score = calc_score()
+		_refresh()
 		change_screen(Screen.SUMMARY)
 
 
@@ -133,14 +151,87 @@ func _start_new_run() -> void:
 	for pot: Pot in pot_grid.get_children():
 		pot.reset()
 	change_screen(Screen.DAY)
-	
-	
+	save_game()
+
+
 func calc_score() -> int:
 	var unharvested := 0
-	var total := 0
 	for pot: Pot in pot_grid.get_children():
 		if pot.plant != null:
+			@warning_ignore("integer_division")
 			unharvested += pot.plant.seed_cost / 2
-	total = current_coins + unharvested
-	return total
+	return current_coins + unharvested
+
+
+func clear_run() -> void:
+	var data := {
+		"version": SAVE_VERSION,
+		"best_score": best_score
+	}
 	
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_string(JSON.stringify(data, "\t"))
+
+
+func save_game() -> void:
+	var data := {
+		"version": SAVE_VERSION,
+		"best_score": best_score,
+		"current_day": current_day,
+		"current_coins": current_coins,
+		"remaining_actions": remaining_actions,
+		"actions_per_day": actions_per_day,
+		"has_extra_action": has_extra_action,
+		"selected_seed": selected_seed,
+	}
+	
+	var pot_data := []
+	for pot: Pot in pot_grid.get_children():
+		pot_data.append(pot.to_dict())
+	data["pots"] = pot_data
+	
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		push_error("Could not open save file: %s" % FileAccess.get_open_error())
+		return
+	file.store_string(JSON.stringify(data, "\t"))
+
+
+func load_game() -> bool:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return false
+	
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return false
+		
+	var data = JSON.parse_string(file.get_as_text())
+	if data == null:
+		push_error("Save file is corrupt")
+		return false
+	
+	if int(data.get("version", 0)) != SAVE_VERSION:
+		return false
+		
+	best_score = int(data.get("best_score", 0))
+	
+	if not data.has("run"):
+		return false
+		
+	var run: Dictionary = data["run"]
+	current_day = int(run.get("current_day", STARTING_DAY))
+	current_coins = int(run.get("current_coins", STARTING_COINS))
+	actions_per_day = int(run.get("actions_per_day", BASE_ACTIONS_PER_DAY))
+	remaining_actions = int(run.get("remaining_actions", BASE_ACTIONS_PER_DAY))
+	has_growth_speed = run.get("has_growth_speed", false)
+	has_extra_action = run.get("has_extra_action", false)
+	selected_seed = run.get("selected_seed", STARTER_SEED)
+	
+	var pots := pot_grid.get_children()
+	var saved_pots: Array = run.get("pots", [])
+	for i in mini(pots.size(), saved_pots.size()):
+		pots[i].from_dict(saved_pots[i], plants_by_id)
+
+	return true

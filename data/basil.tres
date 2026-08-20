@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_upsdo")
+id = 1
 display_name = "Basil"
 growth_days = 1
 sell_price = 4

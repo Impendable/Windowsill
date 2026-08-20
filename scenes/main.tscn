@@ -18,7 +18,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0wfyh")
-available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("4_o6xl0"), ExtResource("5_tipki")])
+available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("5_tipki"), ExtResource("4_o6xl0")])
 selected_seed = ExtResource("2_sugp2")
 
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
