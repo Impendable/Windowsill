@@ -14,10 +14,10 @@ const RUN_LENGTH := 7
 
 @onready var header: HeaderUI = %HeaderUI
 @onready var shop: ShopScreen = %ShopScreen
+@onready var summary: SummaryScreen = %SummaryScreen
 @onready var pot_grid: HBoxContainer = %PotGrid
 @onready var day_screen: Control = %DayScreen
 @onready var summary_screen: Control = %SummaryScreen
-@onready var score: Label = $SummaryScreen/VBoxContainer/Score
 
 enum Screen { DAY, SHOP, SUMMARY }
 
@@ -28,6 +28,7 @@ var actions_per_day := BASE_ACTIONS_PER_DAY
 var remaining_actions := BASE_ACTIONS_PER_DAY
 var has_growth_speed := false
 var has_extra_action := false
+var best_score: int
 
 func _ready() -> void:
 	#Check all pots in scene for any signals
@@ -57,7 +58,7 @@ func _refresh() -> void:
 		selected_seed = STARTER_SEED
 	header.update(current_day, RUN_LENGTH, current_coins, remaining_actions)
 	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
-
+	summary.update(calc_score(), best_score)
 
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
@@ -77,7 +78,8 @@ func _on_end_day_pressed() -> void:
 	if current_day != RUN_LENGTH:
 		change_screen(Screen.SHOP)
 	else:
-		score.text = "Score: %d" % calc_score()
+		if calc_score() > best_score:
+			best_score = calc_score()
 		change_screen(Screen.SUMMARY)
 
 
@@ -117,21 +119,28 @@ func _sell_plant(amount: int) -> void:
 
 
 func growing_rate() -> int:
-	return BASE_GROWTH_RATE + 1 if has_growth_speed else 1
+	return BASE_GROWTH_RATE + (1 if has_growth_speed else 0)
 
 
 func _start_new_run() -> void:
 	current_coins = STARTING_COINS
 	current_day = STARTING_DAY
 	remaining_actions = BASE_ACTIONS_PER_DAY
+	actions_per_day = BASE_ACTIONS_PER_DAY
 	has_growth_speed = false
 	has_extra_action = false
 	selected_seed = STARTER_SEED
+	for pot: Pot in pot_grid.get_children():
+		pot.reset()
+	change_screen(Screen.DAY)
+	
 	
 func calc_score() -> int:
-	var current_growth_cost := 0
+	var unharvested := 0
+	var total := 0
 	for pot: Pot in pot_grid.get_children():
-		for plant: PlantType in pot:
-			@warning_ignore("integer_division")
-			current_growth_cost = current_growth_cost + plant.seed_cost / 2
-	return current_coins + current_growth_cost
+		if pot.plant != null:
+			unharvested += pot.plant.seed_cost / 2
+	total = current_coins + unharvested
+	return total
+	

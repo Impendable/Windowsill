@@ -8,6 +8,7 @@
 [ext_resource type="Resource" uid="uid://05227ff5wk6y" path="res://data/parsley.tres" id="5_tipki"]
 [ext_resource type="Script" uid="uid://dajjw203hlukx" path="res://scenes/header_ui.gd" id="6_o6xl0"]
 [ext_resource type="Script" uid="uid://cdntua5y31ex4" path="res://scenes/shop_screen.gd" id="8_tipki"]
+[ext_resource type="Script" uid="uid://chhrp5wdrhb5h" path="res://scenes/summary_screen.gd" id="9_85g3d"]
 
 [node name="Main" type="Control" unique_id=1146181859]
 layout_mode = 3
@@ -174,6 +175,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("9_85g3d")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SummaryScreen" unique_id=1638065096]
 custom_minimum_size = Vector2(150, 50)
@@ -191,6 +193,7 @@ grow_vertical = 0
 alignment = 1
 
 [node name="Score" type="Label" parent="SummaryScreen/VBoxContainer" unique_id=1753623650]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Score:"
 horizontal_alignment = 1
