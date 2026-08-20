@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://be168d4tejwkp" path="res://data/oregano.tres" id="4_o6xl0"]
 [ext_resource type="Resource" uid="uid://05227ff5wk6y" path="res://data/parsley.tres" id="5_tipki"]
 [ext_resource type="Script" uid="uid://dajjw203hlukx" path="res://scenes/header_ui.gd" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://dmh01yjmrfers" path="res://scenes/day_screen.gd" id="7_choun"]
 [ext_resource type="Script" uid="uid://cdntua5y31ex4" path="res://scenes/shop_screen.gd" id="8_tipki"]
 [ext_resource type="Script" uid="uid://chhrp5wdrhb5h" path="res://scenes/summary_screen.gd" id="9_85g3d"]
 
@@ -61,6 +62,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("7_choun")
 
 [node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
 unique_name_in_owner = true
@@ -105,6 +107,19 @@ grow_vertical = 0
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
 text = "End Day"
+
+[node name="SeedButtons" type="HBoxContainer" parent="DayScreen" unique_id=203147618]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -190.0
+offset_bottom = -142.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="ShopScreen" type="Control" parent="." unique_id=527266103]
 unique_name_in_owner = true

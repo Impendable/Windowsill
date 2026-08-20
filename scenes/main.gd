@@ -4,9 +4,9 @@ const SAVE_PATH := "user://save.json"
 const SAVE_VERSION := 1
 const POT_SCENE := preload("res://scenes/pot.tscn")
 const STARTER_SEED := preload("res://data/basil.tres")
-const BASE_ACTIONS_PER_DAY := 5
+const BASE_ACTIONS_PER_DAY := 8
 const BASE_GROWTH_RATE := 1
-const STARTING_COINS := 0
+const STARTING_COINS := 10
 const STARTING_DAY := 1
 const RUN_LENGTH := 7
 
@@ -15,6 +15,7 @@ const RUN_LENGTH := 7
 @export var selected_seed: PlantType
 
 @onready var header: HeaderUI = %HeaderUI
+@onready var day: DayScreen = %DayScreen
 @onready var shop: ShopScreen = %ShopScreen
 @onready var summary: SummaryScreen = %SummaryScreen
 @onready var pot_grid: HBoxContainer = %PotGrid
@@ -42,11 +43,11 @@ func _ready() -> void:
 		_connect_pot(pot)
 		
 	#Connect all signals
-	shop.seed_selected.connect(_on_seed_selected)
+	day.seed_selected.connect(_on_seed_selected)
 	shop.upgrade_requested.connect(_on_upgrade_requested)
 	
 	#Build Shop with all plants
-	shop.build(available_plants)
+	day.build(available_plants)
 	
 	#Set screen to starting screen
 	if load_game():
@@ -72,7 +73,8 @@ func _refresh() -> void:
 	if selected_seed.seed_cost > current_coins:
 		selected_seed = STARTER_SEED
 	header.update(current_day, RUN_LENGTH, current_coins, remaining_actions)
-	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
+	day.refresh(current_coins, selected_seed)
+	shop.refresh(current_coins, has_growth_speed, has_extra_action)
 	summary.update(calc_score(), best_score)
 
 #Function for when a pot is tapped
