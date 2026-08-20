@@ -72,4 +72,7 @@ func from_dict(data: Dictionary, plants_by_id: Dictionary) -> void:
 	plant = plants_by_id.get(data.get("plant_id", ""))
 	state = int(data.get("state", State.EMPTY))
 	growth_counter = int(data.get("growth_counter", 0))
+	if plant == null:
+		state = State.EMPTY
+		growth_counter = 0
 	_refresh()

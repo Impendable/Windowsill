@@ -67,7 +67,7 @@ func change_screen(screen: Screen) -> void:
 	summary.visible = current_screen == Screen.SUMMARY
 	_refresh()
 
-
+#Refresh all screens and seed chosen if necessary
 func _refresh() -> void:
 	if selected_seed.seed_cost > current_coins:
 		selected_seed = STARTER_SEED
@@ -75,7 +75,7 @@ func _refresh() -> void:
 	shop.refresh(current_coins, has_growth_speed, has_extra_action, selected_seed)
 	summary.update(calc_score(), best_score)
 
-
+#Function for when a pot is tapped
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
 	if remaining_actions <= 0:
@@ -89,18 +89,19 @@ func _on_pot_tapped(pot: Pot) -> void:
 			remaining_actions -= 1
 	_refresh()
 
-
+#End Day pressed (Day Screen)
 func _on_end_day_pressed() -> void:
-	save_game()
+	
 	if current_day < RUN_LENGTH:
+		save_game()
 		change_screen(Screen.SHOP)
 	else:
 		if calc_score() > best_score:
 			best_score = calc_score()
-		_refresh()
+		clear_run()
 		change_screen(Screen.SUMMARY)
 
-
+#Start Day Pressed (Shop Screen)
 func _on_start_day_pressed() -> void:
 	current_day += 1
 	for pot: Pot in pot_grid.get_children():
@@ -108,12 +109,12 @@ func _on_start_day_pressed() -> void:
 	remaining_actions = actions_per_day
 	change_screen(Screen.DAY)
 
-
+#Switch which seed is being planted
 func _on_seed_selected(plant: PlantType) -> void:
 	selected_seed = plant
 	_refresh()
 
-
+#Connects from shopscreen to signal upgrades
 func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 	match upgrade:
 		ShopScreen.Upgrade.GROWTH_SPEED_UP:
@@ -135,11 +136,11 @@ func _sell_plant(amount: int) -> void:
 	current_coins += amount
 	_refresh()
 
-
+#Changes growing rate based on upgrades
 func growing_rate() -> int:
 	return BASE_GROWTH_RATE + (1 if has_growth_speed else 0)
 
-
+#Start a new run on summaryscreen button pressed, resets states keeps best score
 func _start_new_run() -> void:
 	current_coins = STARTING_COINS
 	current_day = STARTING_DAY
@@ -153,7 +154,7 @@ func _start_new_run() -> void:
 	change_screen(Screen.DAY)
 	save_game()
 
-
+#Calcs score based on current coins and a refund of half the cost of the currently growing seed
 func calc_score() -> int:
 	var unharvested := 0
 	for pot: Pot in pot_grid.get_children():
@@ -162,7 +163,7 @@ func calc_score() -> int:
 			unharvested += pot.plant.seed_cost / 2
 	return current_coins + unharvested
 
-
+#clears the run at end of game
 func clear_run() -> void:
 	var data := {
 		"version": SAVE_VERSION,
@@ -174,31 +175,35 @@ func clear_run() -> void:
 		return
 	file.store_string(JSON.stringify(data, "\t"))
 
-
+#Save game to file (data only)
 func save_game() -> void:
+	var pot_data := []
+	for pot: Pot in pot_grid.get_children():
+		pot_data.append(pot.to_dict())
+		
 	var data := {
 		"version": SAVE_VERSION,
 		"best_score": best_score,
+		"run": {
 		"current_day": current_day,
 		"current_coins": current_coins,
 		"remaining_actions": remaining_actions,
 		"actions_per_day": actions_per_day,
 		"has_extra_action": has_extra_action,
-		"selected_seed": selected_seed,
+		"has_growth_speed": has_growth_speed,
+		"selected_seed_id": selected_seed.id,
+		"pots": pot_data,
+		},
 	}
-	
-	var pot_data := []
-	for pot: Pot in pot_grid.get_children():
-		pot_data.append(pot.to_dict())
-	data["pots"] = pot_data
 	
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("Could not open save file: %s" % FileAccess.get_open_error())
 		return
 	file.store_string(JSON.stringify(data, "\t"))
+	print("Saved to ", ProjectSettings.globalize_path(SAVE_PATH))
 
-
+#Load game (data)
 func load_game() -> bool:
 	if not FileAccess.file_exists(SAVE_PATH):
 		return false
@@ -227,7 +232,7 @@ func load_game() -> bool:
 	remaining_actions = int(run.get("remaining_actions", BASE_ACTIONS_PER_DAY))
 	has_growth_speed = run.get("has_growth_speed", false)
 	has_extra_action = run.get("has_extra_action", false)
-	selected_seed = run.get("selected_seed", STARTER_SEED)
+	selected_seed = plants_by_id.get(run.get("selected_seed_id", ""), STARTER_SEED)
 	
 	var pots := pot_grid.get_children()
 	var saved_pots: Array = run.get("pots", [])
