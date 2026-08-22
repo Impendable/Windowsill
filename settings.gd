@@ -33,6 +33,9 @@ func _apply_to_bus(bus_name: String, linear: float) -> void:
 func save_settings() -> void:
 	var config := ConfigFile.new()
 	#TODO 4: store both volumes under an "audio" section
+	config.set_file("MusicBus", "Music", music_volume)
+	config.set_file("SFXBus", "SFX", sfx_volume)
+	
 	config.save(CONFIG_PATH)
 	
 func load_settings() -> void:
@@ -41,6 +44,9 @@ func load_settings() -> void:
 		_apply_all() #no file yet - defaults already set above
 		return
 	#TODO 5: read both values back, with current values as defaults
+	for settings in config.get_sections():
+		music_volume = config.get_value("MusicBus", "Music", music_volume)
+		sfx_volume = config.get_value("SFXBus", "SFX", sfx_volume)
 	_apply_all()
 
 func _apply_all() -> void:
