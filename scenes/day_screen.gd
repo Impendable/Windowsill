@@ -11,7 +11,7 @@ var seed_buttons := {} # PlantType -> Button
 func build(plants: Array[PlantType]) -> void:
 	for plant: PlantType in plants:
 		var button := Button.new()
-		button.text = "%s (%d)" % [plant.display_name, plant.seed_cost]
+		button.text = "%s\n(%d)" % [plant.display_name, plant.seed_cost]
 		button.toggle_mode = true
 		button.pressed.connect(_on_seed_button_pressed.bind(plant))
 		seed_list.add_child(button)

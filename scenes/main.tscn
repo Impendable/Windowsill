@@ -10,6 +10,10 @@
 [ext_resource type="Script" uid="uid://dmh01yjmrfers" path="res://scenes/day_screen.gd" id="7_choun"]
 [ext_resource type="Script" uid="uid://cdntua5y31ex4" path="res://scenes/shop_screen.gd" id="8_tipki"]
 [ext_resource type="Script" uid="uid://chhrp5wdrhb5h" path="res://scenes/summary_screen.gd" id="9_85g3d"]
+[ext_resource type="AudioStream" uid="uid://bms1rsdso6wq" path="res://audio/SFX/HarvestSound.ogg" id="9_eb6dy"]
+[ext_resource type="AudioStream" uid="uid://bnlvv253a2feq" path="res://audio/SFX/ShopButton.ogg" id="11_trceg"]
+[ext_resource type="Script" uid="uid://2y04djgjdnmx" path="res://scenes/setting_screen.gd" id="13_trceg"]
+[ext_resource type="AudioStream" uid="uid://c6x4enpprlvlj" path="res://audio/Music/WindowsillBG.ogg" id="14_a8y0u"]
 
 [node name="Main" type="Control" unique_id=1146181859]
 layout_mode = 3
@@ -25,11 +29,14 @@ selected_seed = ExtResource("2_sugp2")
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -123.5
+offset_right = 123.5
 offset_bottom = 50.0
 grow_horizontal = 2
-theme_override_constants/h_separation = 75
+theme_override_constants/h_separation = 50
 columns = 3
 script = ExtResource("6_o6xl0")
 
@@ -67,12 +74,15 @@ script = ExtResource("7_choun")
 [node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 14
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -37.0
-offset_bottom = 45.0
+offset_left = -175.0
+offset_top = -41.0
+offset_right = 175.0
+offset_bottom = 41.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -93,15 +103,22 @@ layout_mode = 2
 
 [node name="ActionButtonsContainer" type="GridContainer" parent="DayScreen" unique_id=2053740944]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -79.0
 offset_top = -48.0
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 0
+columns = 3
+
+[node name="RestartRun" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=1299649139]
+layout_mode = 2
+text = "Restart Run"
+
+[node name="Control" type="Control" parent="DayScreen/ActionButtonsContainer" unique_id=820586678]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="EndDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
 custom_minimum_size = Vector2(75, 48)
@@ -120,6 +137,12 @@ offset_top = -190.0
 offset_bottom = -142.0
 grow_horizontal = 2
 grow_vertical = 0
+alignment = 1
+
+[node name="HarvestSound" type="AudioStreamPlayer" parent="DayScreen" unique_id=2024459154]
+unique_name_in_owner = true
+stream = ExtResource("9_eb6dy")
+bus = &"SFX"
 
 [node name="ShopScreen" type="Control" parent="." unique_id=527266103]
 unique_name_in_owner = true
@@ -143,7 +166,7 @@ offset_bottom = -327.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="UpgradeList" type="HBoxContainer" parent="ShopScreen" unique_id=735783086]
+[node name="UpgradeList" type="GridContainer" parent="ShopScreen" unique_id=1039761735]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -152,20 +175,23 @@ offset_top = 300.0
 offset_bottom = -61.0
 grow_horizontal = 2
 grow_vertical = 2
+columns = 3
 
 [node name="GrowthSpeed" type="Button" parent="ShopScreen/UpgradeList" unique_id=854461268]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
-text = "Growth Speed Up (75)"
+text = "Growth Speed Up
+(20)"
 
-[node name="PlusAction" type="Button" parent="ShopScreen/UpgradeList" unique_id=384753460]
+[node name="SellBoost" type="Button" parent="ShopScreen/UpgradeList" unique_id=384753460]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
-text = "+1 Action Per Day (150)"
+text = "+25% Sell Price
+(75)"
 
 [node name="StartDay" type="Button" parent="ShopScreen" unique_id=138337985]
 custom_minimum_size = Vector2(75, 48)
@@ -180,6 +206,11 @@ offset_top = -8.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Start Day"
+
+[node name="ShopButtonSound" type="AudioStreamPlayer" parent="ShopScreen" unique_id=1860531743]
+unique_name_in_owner = true
+stream = ExtResource("11_trceg")
+bus = &"SFX"
 
 [node name="SummaryScreen" type="Control" parent="." unique_id=1524585547]
 unique_name_in_owner = true
@@ -223,8 +254,32 @@ custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Start New Run"
 
+[node name="SettingScreen" type="Control" parent="." unique_id=732145528]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("13_trceg")
+
+[node name="MusicSlider" type="HSlider" parent="SettingScreen" unique_id=2006314784]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 16.0
+
+[node name="SFXSlider" type="HSlider" parent="SettingScreen" unique_id=724143005]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 16.0
+
+[node name="BGMusic" type="AudioStreamPlayer" parent="." unique_id=1864609052]
+unique_name_in_owner = true
+stream = ExtResource("14_a8y0u")
+bus = &"Music"
+
+[connection signal="pressed" from="DayScreen/ActionButtonsContainer/RestartRun" to="." method="_start_new_run"]
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/GrowthSpeed" to="ShopScreen" method="_on_growth_speed_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/PlusAction" to="ShopScreen" method="_on_plus_action_pressed"]
+[connection signal="pressed" from="ShopScreen/UpgradeList/SellBoost" to="ShopScreen" method="_on_plus_action_pressed"]
 [connection signal="pressed" from="ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
 [connection signal="pressed" from="SummaryScreen/VBoxContainer/StartNewRun" to="." method="_start_new_run"]
