@@ -50,6 +50,7 @@ func _ready() -> void:
 	#Connect all signals
 	day.seed_selected.connect(_on_seed_selected)
 	shop.upgrade_requested.connect(_on_upgrade_requested)
+	settings.closed.connect(_on_settings_closed)
 	
 	#Build Shop with all plants
 	day.build(available_plants)
@@ -71,7 +72,7 @@ func change_screen(screen: Screen) -> void:
 	day_screen.visible = current_screen == Screen.DAY
 	shop.visible = current_screen == Screen.SHOP
 	summary.visible = current_screen == Screen.SUMMARY
-	
+	settings.visible = current_screen == Screen.SETTINGS
 	_refresh()
 
 #Refresh all screens and seed chosen if necessary
@@ -139,6 +140,18 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 			current_coins -= ShopScreen.SELL_BOOST_COST
 			has_sell_boost = true
 	_refresh()
+
+
+func _on_settings_closed() -> void:
+	header.visible = true
+	change_screen(Screen.DAY)
+	Settings.save_settings()
+
+
+func _on_settings_pressed() -> void:
+	header.visible = false
+	change_screen(Screen.SETTINGS)
+
 
 #Increase coin amount when selling/harvesting
 func _sell_plant(amount: int) -> void:
