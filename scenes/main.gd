@@ -27,6 +27,7 @@ const RUN_LENGTH := 7
 enum Screen { DAY, SHOP, SUMMARY, SETTINGS }
 
 var current_screen: Screen = Screen.DAY
+var previous_screen: Screen = Screen.DAY
 var current_day := STARTING_DAY
 var current_coins := STARTING_COINS
 var actions_per_day := BASE_ACTIONS_PER_DAY
@@ -144,12 +145,16 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 
 func _on_settings_closed() -> void:
 	header.visible = true
-	change_screen(Screen.DAY)
+	change_screen(previous_screen)
+	$Settings.visible = true
 	Settings.save_settings()
 
 
 func _on_settings_pressed() -> void:
+	if current_screen != Screen.SETTINGS:
+		previous_screen = current_screen
 	header.visible = false
+	$Settings.visible = false
 	change_screen(Screen.SETTINGS)
 
 

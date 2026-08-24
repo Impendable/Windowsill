@@ -26,9 +26,24 @@ script = ExtResource("1_0wfyh")
 available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("5_tipki"), ExtResource("4_o6xl0")])
 selected_seed = ExtResource("2_sugp2")
 
+[node name="Settings" type="Button" parent="." unique_id=1729434742]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -58.5
+offset_top = -48.0
+offset_right = 58.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+text = "Settings"
+
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -64,13 +79,13 @@ vertical_alignment = 1
 
 [node name="DayScreen" type="Control" parent="." unique_id=786769554]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("7_choun")
 
 [node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
@@ -112,6 +127,7 @@ anchor_bottom = 1.0
 offset_top = -48.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 columns = 3
 
 [node name="RestartRun" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=1299649139]
@@ -119,11 +135,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Restart Run"
 
-[node name="Settings" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=1729434742]
-custom_minimum_size = Vector2(48, 48)
+[node name="Control" type="Control" parent="DayScreen/ActionButtonsContainer" unique_id=1398583245]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Settings"
+mouse_filter = 2
 
 [node name="EndDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
 custom_minimum_size = Vector2(75, 48)
@@ -262,6 +277,7 @@ text = "Start New Run"
 
 [node name="SettingScreen" type="Control" parent="." unique_id=732145528]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -363,8 +379,8 @@ unique_name_in_owner = true
 stream = ExtResource("14_a8y0u")
 bus = &"Music"
 
+[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/RestartRun" to="." method="_start_new_run"]
-[connection signal="pressed" from="DayScreen/ActionButtonsContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/GrowthSpeed" to="ShopScreen" method="_on_growth_speed_pressed"]
 [connection signal="pressed" from="ShopScreen/UpgradeList/SellBoost" to="ShopScreen" method="_on_plus_action_pressed"]
