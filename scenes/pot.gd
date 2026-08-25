@@ -1,6 +1,8 @@
 class_name Pot
 extends Button
 
+@onready var plant_sprite: TextureRect = %PlantSprite
+
 signal tapped(pot: Pot)
 signal harvested(amount: int)
 
@@ -49,11 +51,17 @@ func interact(seed_type: PlantType) -> Result:
 func _refresh() -> void:
 	match state:
 		State.EMPTY:
-			text = "Empty"
+			plant_sprite.visible = false
 		State.GROWING:
-			text = "%s %d/%d" % [plant.display_name, growth_counter, plant.growth_days]
+			if growth_counter <= plant.growth_days / 2:
+				plant_sprite.texture = plant.planted_texture
+			else:
+				plant_sprite.texture = plant.growing_texture
+			plant_sprite.visible = true
+			
 		State.READY:
-			text = "%s ready!" % plant.display_name
+			plant_sprite.texture = plant.ready_texture
+			plant_sprite.visible = true
 
 
 func reset() -> void:

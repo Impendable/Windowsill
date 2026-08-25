@@ -1,9 +1,15 @@
 [gd_resource type="Resource" script_class="PlantType" format=3 uid="uid://05227ff5wk6y"]
 
 [ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="1_k11he"]
+[ext_resource type="Texture2D" uid="uid://f2bdq0j5tg06" path="res://art/Parsley-Growing.png" id="1_uuu7n"]
+[ext_resource type="Texture2D" uid="uid://cb410qko4cowl" path="res://art/Parsley-Seedling.png" id="2_u5njh"]
+[ext_resource type="Texture2D" uid="uid://2tlryo3u11f7" path="res://art/Parsley-Harvest.png" id="3_lbiq8"]
 
 [resource]
 script = ExtResource("1_k11he")
+planted_texture = ExtResource("2_u5njh")
+growing_texture = ExtResource("1_uuu7n")
+ready_texture = ExtResource("3_lbiq8")
 id = 3
 display_name = "Parsley"
 growth_days = 2

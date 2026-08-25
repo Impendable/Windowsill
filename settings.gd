@@ -7,7 +7,6 @@ var music_volume := 1.0 #linear 0.0 to 1.0
 var sfx_volume := 1.0
 
 func _ready() -> void:
-	print(CONFIG_PATH)
 	load_settings()
 	
 func set_music_volume(value: float) -> void:
@@ -27,7 +26,7 @@ func set_master_volume(value: float) -> void:
 func _apply_to_bus(bus_name: String, linear: float) -> void:
 	var index := AudioServer.get_bus_index(bus_name)
 	if index < 0:
-		push_error("Audio bus does not exist")
+		push_error("Audio bus '%s' does not exist" % bus_name)
 		return
 	if linear <= 0.0:
 		AudioServer.set_bus_mute(index, true)
@@ -50,7 +49,7 @@ func load_settings() -> void:
 	if config.load(CONFIG_PATH) != OK:
 		_apply_all() #no file yet - defaults already set above
 		return
-	#TODO 5: read both values back, with current values as defaults
+	# read values back, with current values as defaults
 	master_volume = config.get_value("audio", "master", master_volume)
 	music_volume = config.get_value("audio", "music", music_volume)
 	sfx_volume = config.get_value("audio", "sfx", sfx_volume)

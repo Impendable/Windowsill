@@ -79,6 +79,7 @@ vertical_alignment = 1
 
 [node name="DayScreen" type="Control" parent="." unique_id=786769554]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -174,6 +175,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("8_tipki")
 
 [node name="SeedList" type="HBoxContainer" parent="ShopScreen" unique_id=237327694]

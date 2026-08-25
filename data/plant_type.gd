@@ -1,6 +1,9 @@
 class_name PlantType
 extends Resource
 
+@export var planted_texture: Texture2D
+@export var growing_texture: Texture2D
+@export var ready_texture: Texture2D
 @export var id: int
 @export var display_name: String
 @export var growth_days: int

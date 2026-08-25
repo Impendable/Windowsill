@@ -1,9 +1,15 @@
 [gd_resource type="Resource" script_class="PlantType" format=3 uid="uid://be168d4tejwkp"]
 
 [ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="1_6nf72"]
+[ext_resource type="Texture2D" uid="uid://dtd72ywjvaucc" path="res://art/Oregano-Growing.png" id="1_bw2em"]
+[ext_resource type="Texture2D" uid="uid://dy5le3jbshj6w" path="res://art/Oregano-Seedling.png" id="2_0n0qp"]
+[ext_resource type="Texture2D" uid="uid://ci0rbe1u2wp56" path="res://art/Oregano-Harvest.png" id="3_o84qi"]
 
 [resource]
 script = ExtResource("1_6nf72")
+planted_texture = ExtResource("2_0n0qp")
+growing_texture = ExtResource("1_bw2em")
+ready_texture = ExtResource("3_o84qi")
 id = 2
 display_name = "Oregano"
 growth_days = 5

@@ -1,9 +1,15 @@
 [gd_resource type="Resource" script_class="PlantType" format=3 uid="uid://bitxb5xb2q4ni"]
 
+[ext_resource type="Texture2D" uid="uid://6ofkg2ne4u1j" path="res://art/Basil-Sprouting.png" id="1_nlcgl"]
 [ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="1_upsdo"]
+[ext_resource type="Texture2D" uid="uid://ixvh4xouan3g" path="res://art/Basil-Seedling.png" id="2_7brcn"]
+[ext_resource type="Texture2D" uid="uid://im4scvmnux2p" path="res://art/Basil-Harvest.png" id="3_nejch"]
 
 [resource]
 script = ExtResource("1_upsdo")
+planted_texture = ExtResource("2_7brcn")
+growing_texture = ExtResource("1_nlcgl")
+ready_texture = ExtResource("3_nejch")
 id = 1
 display_name = "Basil"
 growth_days = 1
