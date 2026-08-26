@@ -8,7 +8,7 @@ const BASE_ACTIONS_PER_DAY := 6
 const BASE_GROWTH_RATE := 1
 const STARTING_COINS := 10
 const STARTING_DAY := 1
-const RUN_LENGTH := 7
+const RUN_LENGTH := 14
 
 
 @export var available_plants: Array[PlantType]
@@ -182,6 +182,7 @@ func _start_new_run() -> void:
 	selected_seed = STARTER_SEED
 	for pot: Pot in pot_grid.get_children():
 		pot.reset()
+		pot._refresh()
 	change_screen(Screen.DAY)
 	save_game()
 
@@ -232,7 +233,6 @@ func save_game() -> void:
 		push_error("Could not open save file: %s" % FileAccess.get_open_error())
 		return
 	file.store_string(JSON.stringify(data, "\t"))
-	print("Saved to ", ProjectSettings.globalize_path(SAVE_PATH))
 
 #Load game (data)
 func load_game() -> bool:

@@ -10,8 +10,8 @@ const GROWTH_SPEED_COST := 20
 const SELL_BOOST_COST := 75
 
 
-@onready var growth_speed_button: Button = %GrowthSpeed
-@onready var sell_boost_button: Button = %SellBoost
+@onready var growth_speed_button: TextureButton = %GrowthSpeed
+@onready var sell_boost_button: TextureButton = %SellBoost
 @onready var shop_sound: AudioStreamPlayer = %ShopButtonSound
 
 

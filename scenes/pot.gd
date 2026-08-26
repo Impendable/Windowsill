@@ -53,7 +53,7 @@ func _refresh() -> void:
 		State.EMPTY:
 			plant_sprite.visible = false
 		State.GROWING:
-			if growth_counter <= plant.growth_days / 2:
+			if float(growth_counter) / plant.growth_days <= 0.5:
 				plant_sprite.texture = plant.planted_texture
 			else:
 				plant_sprite.texture = plant.growing_texture

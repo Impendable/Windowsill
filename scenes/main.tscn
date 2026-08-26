@@ -6,14 +6,31 @@
 [ext_resource type="Script" uid="uid://cy5r4u17awyw6" path="res://data/plant_type.gd" id="3_tefeu"]
 [ext_resource type="Resource" uid="uid://be168d4tejwkp" path="res://data/oregano.tres" id="4_o6xl0"]
 [ext_resource type="Resource" uid="uid://05227ff5wk6y" path="res://data/parsley.tres" id="5_tipki"]
+[ext_resource type="Texture2D" uid="uid://cagpjv82f1ikn" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0029.png" id="6_jscy8"]
+[ext_resource type="Texture2D" uid="uid://dr26ahl5en0q2" path="res://art/Tilepack/Tiles/Small tiles/Thin outline/tile_0005.png" id="6_muem4"]
 [ext_resource type="Script" uid="uid://dajjw203hlukx" path="res://scenes/header_ui.gd" id="6_o6xl0"]
 [ext_resource type="Script" uid="uid://dmh01yjmrfers" path="res://scenes/day_screen.gd" id="7_choun"]
+[ext_resource type="Texture2D" uid="uid://bagbfok776a3t" path="res://art/Tilepack/Tiles/Small tiles/Thin outline/tile_0034.png" id="7_dp3eg"]
+[ext_resource type="Texture2D" uid="uid://dg8t4xfnoke1x" path="res://art/Tilepack/Tiles/Large tiles/Thick outline/tile_0015.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://cdntua5y31ex4" path="res://scenes/shop_screen.gd" id="8_tipki"]
 [ext_resource type="Script" uid="uid://chhrp5wdrhb5h" path="res://scenes/summary_screen.gd" id="9_85g3d"]
 [ext_resource type="AudioStream" uid="uid://bms1rsdso6wq" path="res://audio/SFX/HarvestSound.ogg" id="9_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://c77sis0vme2kq" path="res://scenes/seed_button.tscn" id="10_0ld40"]
+[ext_resource type="Texture2D" uid="uid://posenr6mjpwr" path="res://art/Tilepack/Tiles/Small tiles/Thin outline/tile_0003.png" id="11_0ld40"]
 [ext_resource type="AudioStream" uid="uid://bnlvv253a2feq" path="res://audio/SFX/ShopButton.ogg" id="11_trceg"]
 [ext_resource type="Script" uid="uid://2y04djgjdnmx" path="res://scenes/setting_screen.gd" id="13_trceg"]
 [ext_resource type="AudioStream" uid="uid://c6x4enpprlvlj" path="res://audio/Music/WindowsillBG.ogg" id="14_a8y0u"]
+[ext_resource type="Texture2D" uid="uid://dk8gvpjl5rxhf" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0003.png" id="16_gqmmt"]
+[ext_resource type="Texture2D" uid="uid://clguvbdajlh7n" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0011.png" id="16_yc10j"]
+[ext_resource type="Texture2D" uid="uid://db1t0hd2mv5gv" path="res://art/Tilepack/Tiles/Small tiles/Thin outline/tile_0013.png" id="18_pm3ni"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_rs1r3"]
+blend_mode = 4
+light_mode = 1
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
 [node name="Main" type="Control" unique_id=1146181859]
 layout_mode = 3
@@ -26,7 +43,13 @@ script = ExtResource("1_0wfyh")
 available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("5_tipki"), ExtResource("4_o6xl0")])
 selected_seed = ExtResource("2_sugp2")
 
-[node name="Settings" type="Button" parent="." unique_id=1729434742]
+[node name="Background" type="Sprite2D" parent="." unique_id=1511965620]
+material = SubResource("CanvasItemMaterial_rs1r3")
+position = Vector2(180.5, 319.5)
+scale = Vector2(22.312498, 39.9375)
+texture = ExtResource("6_jscy8")
+
+[node name="Settings" type="TextureButton" parent="." unique_id=1487046061]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 1
 anchors_preset = 7
@@ -40,7 +63,18 @@ offset_right = 58.5
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
+texture_normal = ExtResource("11_0ld40")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Settings" unique_id=1656979994]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 12.0
+offset_right = 87.39
+offset_bottom = 35.0
 text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
 unique_name_in_owner = true
@@ -48,17 +82,23 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -123.5
-offset_right = 123.5
-offset_bottom = 50.0
+offset_left = -123.31
+offset_right = 123.69
+offset_bottom = 60.0
 grow_horizontal = 2
 theme_override_constants/h_separation = 50
 columns = 3
 script = ExtResource("6_o6xl0")
 
+[node name="Tile0015" type="Sprite2D" parent="HeaderUI" unique_id=801293417]
+position = Vector2(154, 20)
+scale = Vector2(15.312499, 2.203125)
+texture = ExtResource("8_dp3eg")
+
 [node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 1
 text = "Day:"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -79,7 +119,6 @@ vertical_alignment = 1
 
 [node name="DayScreen" type="Control" parent="." unique_id=786769554]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -88,6 +127,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("7_choun")
+seed_button_scene = ExtResource("10_0ld40")
+
+[node name="Window" type="Sprite2D" parent="DayScreen" unique_id=1448953949]
+position = Vector2(180.135, 263.75)
+scale = Vector2(22.705, 11.383)
+texture = ExtResource("6_muem4")
+
+[node name="Windowsill" type="Sprite2D" parent="DayScreen" unique_id=1275612279]
+position = Vector2(178.99998, 360)
+scale = Vector2(23.125, 1)
+texture = ExtResource("7_dp3eg")
 
 [node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
 unique_name_in_owner = true
@@ -131,20 +181,40 @@ grow_vertical = 0
 mouse_filter = 2
 columns = 3
 
-[node name="RestartRun" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=1299649139]
+[node name="RestartRun" type="TextureButton" parent="DayScreen/ActionButtonsContainer" unique_id=1808755937]
 layout_mode = 2
 size_flags_horizontal = 3
+texture_normal = ExtResource("11_0ld40")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="DayScreen/ActionButtonsContainer/RestartRun" unique_id=982467272]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 12.0
+offset_right = 104.0
+offset_bottom = 35.0
 text = "Restart Run"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Control" type="Control" parent="DayScreen/ActionButtonsContainer" unique_id=1398583245]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="EndDay" type="Button" parent="DayScreen/ActionButtonsContainer" unique_id=30715834]
+[node name="EndDay" type="TextureButton" parent="DayScreen/ActionButtonsContainer" unique_id=1406652936]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
 size_flags_horizontal = 3
+texture_normal = ExtResource("11_0ld40")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="DayScreen/ActionButtonsContainer/EndDay" unique_id=1208285206]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 12.0
+offset_right = 88.0
+offset_bottom = 35.0
 text = "End Day"
 
 [node name="SeedButtons" type="HBoxContainer" parent="DayScreen" unique_id=203147618]
@@ -200,23 +270,47 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 3
 
-[node name="GrowthSpeed" type="Button" parent="ShopScreen/UpgradeList" unique_id=854461268]
+[node name="GrowthSpeed" type="TextureButton" parent="ShopScreen/UpgradeList" unique_id=2087832214]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(110, 110)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
-text = "Growth Speed Up
-(20)"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("16_yc10j")
+texture_disabled = ExtResource("18_pm3ni")
+stretch_mode = 0
 
-[node name="SellBoost" type="Button" parent="ShopScreen/UpgradeList" unique_id=384753460]
+[node name="Label" type="Label" parent="ShopScreen/UpgradeList/GrowthSpeed" unique_id=1412537974]
+layout_mode = 0
+offset_right = 110.0
+offset_bottom = 49.0
+text = "Growth Speed
+(20)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SellBoost" type="TextureButton" parent="ShopScreen/UpgradeList" unique_id=1760603610]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("16_yc10j")
+texture_disabled = ExtResource("18_pm3ni")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="ShopScreen/UpgradeList/SellBoost" unique_id=720750012]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
 text = "+25% Sell Price
 (75)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="StartDay" type="Button" parent="ShopScreen" unique_id=138337985]
+[node name="StartDay" type="TextureButton" parent="ShopScreen" unique_id=1605252610]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 1
 anchors_preset = 3
@@ -224,10 +318,20 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -8.0
-offset_top = -8.0
+offset_left = -111.0
+offset_top = -48.0
+offset_right = -0.54000854
 grow_horizontal = 0
 grow_vertical = 0
+texture_normal = ExtResource("16_gqmmt")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="ShopScreen/StartDay" unique_id=453974749]
+layout_mode = 0
+offset_left = 17.53
+offset_top = 12.0
+offset_right = 89.53
+offset_bottom = 35.0
 text = "Start Day"
 
 [node name="ShopButtonSound" type="AudioStreamPlayer" parent="ShopScreen" unique_id=1860531743]

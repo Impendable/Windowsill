@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://c77sis0vme2kq"]
+
+[ext_resource type="Texture2D" uid="uid://b0b8hscjongvt" path="res://art/Tilepack/Tiles/Large tiles/Thick outline/tile_0019.png" id="1_jfne7"]
+[ext_resource type="Texture2D" uid="uid://dlf3aa5courfs" path="res://art/Tilepack/Tiles/Large tiles/Thick outline/tile_0018.png" id="2_kufdh"]
+
+[node name="TextureRect" type="TextureButton" unique_id=1932490832]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 99.0
+offset_bottom = 101.0
+texture_normal = ExtResource("1_jfne7")
+texture_pressed = ExtResource("2_kufdh")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="." unique_id=709412321]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_left = 15.0
+offset_top = 23.0
+offset_right = 82.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0, 0.015686275, 0, 1)
+text = "Oregano
+(30)"
+horizontal_alignment = 1
+vertical_alignment = 1
