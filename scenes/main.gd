@@ -22,6 +22,9 @@ const RUN_LENGTH := 14
 @onready var pot_grid: HBoxContainer = %PotGrid
 @onready var day_screen: Control = %DayScreen
 @onready var harvest_sound: AudioStreamPlayer = %HarvestSound
+@onready var action_button_sound: AudioStreamPlayer = %ActionButtonSound
+@onready var seed_selected_sound: AudioStreamPlayer = %SeedSelectedSound
+@onready var seed_planted_sound: AudioStreamPlayer = %SeedPlantedSound
 @onready var bg_music: AudioStreamPlayer = %BGMusic
 
 enum Screen { DAY, SHOP, SUMMARY, SETTINGS }
@@ -94,6 +97,7 @@ func _on_pot_tapped(pot: Pot) -> void:
 		return
 	match pot.interact(selected_seed):
 		Pot.Result.PLANTED:
+			seed_planted_sound.play()
 			current_coins -= selected_seed.seed_cost
 			remaining_actions -= 1
 		Pot.Result.HARVESTED:
@@ -103,7 +107,7 @@ func _on_pot_tapped(pot: Pot) -> void:
 
 #End Day pressed (Day Screen)
 func _on_end_day_pressed() -> void:
-	
+	action_button_sound.play()
 	if current_day < RUN_LENGTH:
 		save_game()
 		change_screen(Screen.SHOP)
@@ -115,6 +119,7 @@ func _on_end_day_pressed() -> void:
 
 #Start Day Pressed (Shop Screen)
 func _on_start_day_pressed() -> void:
+	action_button_sound.play()
 	current_day += 1
 	for pot: Pot in pot_grid.get_children():
 		pot.advance_day(growing_rate())
@@ -123,6 +128,7 @@ func _on_start_day_pressed() -> void:
 
 #Switch which seed is being planted
 func _on_seed_selected(plant: PlantType) -> void:
+	seed_selected_sound.play()
 	selected_seed = plant
 	_refresh()
 

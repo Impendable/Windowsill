@@ -23,6 +23,9 @@
 [ext_resource type="Texture2D" uid="uid://dk8gvpjl5rxhf" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0003.png" id="16_gqmmt"]
 [ext_resource type="Texture2D" uid="uid://clguvbdajlh7n" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0011.png" id="16_yc10j"]
 [ext_resource type="Texture2D" uid="uid://db1t0hd2mv5gv" path="res://art/Tilepack/Tiles/Small tiles/Thin outline/tile_0013.png" id="18_pm3ni"]
+[ext_resource type="AudioStream" uid="uid://d1tkceb8yugv6" path="res://audio/SFX/ActionButtons.ogg" id="24_og1vs"]
+[ext_resource type="AudioStream" uid="uid://bpmwu55rvkf1l" path="res://audio/SFX/SeedSelected.ogg" id="25_2wyq8"]
+[ext_resource type="AudioStream" uid="uid://bmjcgexmaxlda" path="res://audio/SFX/PlantSound.ogg" id="26_2wyq8"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_rs1r3"]
 blend_mode = 4
@@ -270,6 +273,11 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 3
 
+[node name="ShopButtonSound" type="AudioStreamPlayer" parent="ShopScreen/UpgradeList" unique_id=1860531743]
+unique_name_in_owner = true
+stream = ExtResource("11_trceg")
+bus = &"SFX"
+
 [node name="GrowthSpeed" type="TextureButton" parent="ShopScreen/UpgradeList" unique_id=2087832214]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 110)
@@ -333,11 +341,6 @@ offset_top = 12.0
 offset_right = 89.53
 offset_bottom = 35.0
 text = "Start Day"
-
-[node name="ShopButtonSound" type="AudioStreamPlayer" parent="ShopScreen" unique_id=1860531743]
-unique_name_in_owner = true
-stream = ExtResource("11_trceg")
-bus = &"SFX"
 
 [node name="SummaryScreen" type="Control" parent="." unique_id=1524585547]
 unique_name_in_owner = true
@@ -484,6 +487,18 @@ text = "Close and Save"
 unique_name_in_owner = true
 stream = ExtResource("14_a8y0u")
 bus = &"Music"
+
+[node name="ActionButtonSound" type="AudioStreamPlayer" parent="." unique_id=1756955050]
+unique_name_in_owner = true
+stream = ExtResource("24_og1vs")
+
+[node name="SeedSelectedSound" type="AudioStreamPlayer" parent="." unique_id=1331888189]
+unique_name_in_owner = true
+stream = ExtResource("25_2wyq8")
+
+[node name="SeedPlantedSound" type="AudioStreamPlayer" parent="." unique_id=1724743467]
+unique_name_in_owner = true
+stream = ExtResource("26_2wyq8")
 
 [connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="DayScreen/ActionButtonsContainer/RestartRun" to="." method="_start_new_run"]
