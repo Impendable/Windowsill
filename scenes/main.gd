@@ -168,7 +168,7 @@ func _on_settings_pressed() -> void:
 func _sell_plant(amount: int) -> void:
 	harvest_sound.play()
 	if has_sell_boost:
-		current_coins += amount * 1.25
+		current_coins += roundi(amount * 1.25)
 	else:
 		current_coins += amount
 	_refresh()

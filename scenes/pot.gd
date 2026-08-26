@@ -34,16 +34,13 @@ func interact(seed_type: PlantType) -> Result:
 			plant = seed_type
 			state = State.GROWING
 			result = Result.PLANTED
-			print("%s has been planted" % plant.display_name)
 		State.READY:
 			harvested.emit(plant.sell_price)
-			print("%s has been harvested" % plant.display_name)	
 			plant = null
 			state = State.EMPTY
 			result = Result.HARVESTED
-		
 		State.GROWING:
-			print("Plant: %s Current growth: %s/%s" % [plant.display_name, growth_counter, plant.growth_days])
+			pass
 	_refresh()
 	return result
 
@@ -66,6 +63,9 @@ func _refresh() -> void:
 
 func reset() -> void:
 	state = State.EMPTY
+	plant = null
+	growth_counter = 0
+	_refresh()
 
 
 func to_dict() -> Dictionary:
@@ -77,8 +77,11 @@ func to_dict() -> Dictionary:
 
 
 func from_dict(data: Dictionary, plants_by_id: Dictionary) -> void:
+	var loaded := int(data.get("state", State.EMPTY))
 	plant = plants_by_id.get(data.get("plant_id", ""))
-	state = int(data.get("state", State.EMPTY))
+	if not State.values().has(loaded):
+		loaded = State.EMPTY
+	state = loaded as State
 	growth_counter = int(data.get("growth_counter", 0))
 	if plant == null:
 		state = State.EMPTY
