@@ -15,6 +15,7 @@ const RUN_LENGTH := 14
 @export var selected_seed: PlantType
 
 @onready var header: HeaderUI = %HeaderUI
+@onready var notification: Notification = %NotificationLabel
 @onready var day: DayScreen = %DayScreen
 @onready var shop: ShopScreen = %ShopScreen
 @onready var settings: SettingScreen = %SettingScreen
@@ -90,10 +91,10 @@ func _refresh() -> void:
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
 	if remaining_actions <= 0:
-		print("No actions remaining")
+		notification.show_message("No actions remaining")
 		return
 	if pot.state == Pot.State.EMPTY and current_coins < selected_seed.seed_cost:
-		print("Not enough coins")
+		notification.show_message("Not enough coins")
 		return
 	match pot.interact(selected_seed):
 		Pot.Result.PLANTED:
@@ -102,6 +103,8 @@ func _on_pot_tapped(pot: Pot) -> void:
 			remaining_actions -= 1
 		Pot.Result.HARVESTED:
 			remaining_actions -= 1
+		Pot.Result.NONE:
+			notification.show_message("Growing: %s/%s days" % [pot.growth_counter,pot.plant.growth_days])
 	_refresh()
 	pot._refresh()
 
@@ -129,6 +132,7 @@ func _on_start_day_pressed() -> void:
 #Switch which seed is being planted
 func _on_seed_selected(plant: PlantType) -> void:
 	seed_selected_sound.play()
+	notification.show_message("%s: Grows in %d days\nSells for %d coins." %[plant.display_name, plant.growth_days, plant.sell_price])
 	selected_seed = plant
 	_refresh()
 
@@ -152,7 +156,7 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 func _on_settings_closed() -> void:
 	header.visible = true
 	change_screen(previous_screen)
-	$Settings.visible = true
+	%Settings.visible = true
 	Settings.save_settings()
 
 
@@ -160,7 +164,7 @@ func _on_settings_pressed() -> void:
 	if current_screen != Screen.SETTINGS:
 		previous_screen = current_screen
 	header.visible = false
-	$Settings.visible = false
+	%Settings.visible = false
 	change_screen(Screen.SETTINGS)
 
 

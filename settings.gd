@@ -1,7 +1,7 @@
 extends Node
 
 const CONFIG_PATH := "user://settings.cfg"
-
+ 
 var master_volume := 1.0
 var music_volume := 1.0 #linear 0.0 to 1.0
 var sfx_volume := 1.0

@@ -26,6 +26,9 @@
 [ext_resource type="AudioStream" uid="uid://d1tkceb8yugv6" path="res://audio/SFX/ActionButtons.ogg" id="24_og1vs"]
 [ext_resource type="AudioStream" uid="uid://bpmwu55rvkf1l" path="res://audio/SFX/SeedSelected.ogg" id="25_2wyq8"]
 [ext_resource type="AudioStream" uid="uid://bmjcgexmaxlda" path="res://audio/SFX/PlantSound.ogg" id="26_2wyq8"]
+[ext_resource type="PackedScene" uid="uid://s4pq52nfnqos" path="res://notification_label.tscn" id="27_vxglm"]
+[ext_resource type="Texture2D" uid="uid://jl2ass74myb2" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0075.png" id="28_yq6so"]
+[ext_resource type="Texture2D" uid="uid://dgsk8hij6lavn" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0074.png" id="29_fv21b"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_rs1r3"]
 blend_mode = 4
@@ -46,42 +49,36 @@ script = ExtResource("1_0wfyh")
 available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("5_tipki"), ExtResource("4_o6xl0")])
 selected_seed = ExtResource("2_sugp2")
 
-[node name="Background" type="Sprite2D" parent="." unique_id=1511965620]
+[node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=28818123]
+
+[node name="Background" type="Sprite2D" parent="BackgroundLayer" unique_id=1511965620]
 material = SubResource("CanvasItemMaterial_rs1r3")
 position = Vector2(180.5, 319.5)
 scale = Vector2(22.312498, 39.9375)
 texture = ExtResource("6_jscy8")
 
-[node name="Settings" type="TextureButton" parent="." unique_id=1487046061]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -58.5
-offset_top = -48.0
-offset_right = 58.5
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 3
-texture_normal = ExtResource("11_0ld40")
-stretch_mode = 0
-
-[node name="Label" type="Label" parent="Settings" unique_id=1656979994]
-layout_mode = 0
-offset_left = 25.0
-offset_top = 12.0
-offset_right = 87.39
-offset_bottom = 35.0
-text = "Settings"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HeaderUI" type="GridContainer" parent="." unique_id=813192292]
+[node name="BGMusic" type="AudioStreamPlayer" parent="BackgroundLayer" unique_id=1864609052]
 unique_name_in_owner = true
-layout_mode = 1
+stream = ExtResource("14_a8y0u")
+bus = &"Music"
+
+[node name="ActionButtonSound" type="AudioStreamPlayer" parent="BackgroundLayer" unique_id=1756955050]
+unique_name_in_owner = true
+stream = ExtResource("24_og1vs")
+
+[node name="SeedSelectedSound" type="AudioStreamPlayer" parent="BackgroundLayer" unique_id=1331888189]
+unique_name_in_owner = true
+stream = ExtResource("25_2wyq8")
+
+[node name="SeedPlantedSound" type="AudioStreamPlayer" parent="BackgroundLayer" unique_id=1724743467]
+unique_name_in_owner = true
+stream = ExtResource("26_2wyq8")
+
+[node name="GameplayLayer" type="CanvasLayer" parent="." unique_id=388781921]
+layer = 2
+
+[node name="HeaderUI" type="GridContainer" parent="GameplayLayer" unique_id=813192292]
+unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -93,12 +90,12 @@ theme_override_constants/h_separation = 50
 columns = 3
 script = ExtResource("6_o6xl0")
 
-[node name="Tile0015" type="Sprite2D" parent="HeaderUI" unique_id=801293417]
+[node name="Tile0015" type="Sprite2D" parent="GameplayLayer/HeaderUI" unique_id=801293417]
 position = Vector2(154, 20)
 scale = Vector2(15.312499, 2.203125)
 texture = ExtResource("8_dp3eg")
 
-[node name="DayLabel" type="Label" parent="HeaderUI" unique_id=902354730]
+[node name="DayLabel" type="Label" parent="GameplayLayer/HeaderUI" unique_id=902354730]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -106,23 +103,23 @@ text = "Day:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CoinLabel" type="Label" parent="HeaderUI" unique_id=1951511272]
+[node name="CoinLabel" type="Label" parent="GameplayLayer/HeaderUI" unique_id=1951511272]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Coins: "
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionBudget" type="Label" parent="HeaderUI" unique_id=442201992]
+[node name="ActionBudget" type="Label" parent="GameplayLayer/HeaderUI" unique_id=442201992]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Actions:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DayScreen" type="Control" parent="." unique_id=786769554]
+[node name="DayScreen" type="Control" parent="GameplayLayer" unique_id=786769554]
 unique_name_in_owner = true
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -132,17 +129,17 @@ mouse_filter = 2
 script = ExtResource("7_choun")
 seed_button_scene = ExtResource("10_0ld40")
 
-[node name="Window" type="Sprite2D" parent="DayScreen" unique_id=1448953949]
+[node name="Window" type="Sprite2D" parent="GameplayLayer/DayScreen" unique_id=1448953949]
 position = Vector2(180.135, 263.75)
 scale = Vector2(22.705, 11.383)
 texture = ExtResource("6_muem4")
 
-[node name="Windowsill" type="Sprite2D" parent="DayScreen" unique_id=1275612279]
+[node name="Windowsill" type="Sprite2D" parent="GameplayLayer/DayScreen" unique_id=1275612279]
 position = Vector2(178.99998, 360)
 scale = Vector2(23.125, 1)
 texture = ExtResource("7_dp3eg")
 
-[node name="PotGrid" type="HBoxContainer" parent="DayScreen" unique_id=359358806]
+[node name="PotGrid" type="HBoxContainer" parent="GameplayLayer/DayScreen" unique_id=359358806]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -160,19 +157,19 @@ mouse_filter = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Pot" parent="DayScreen/PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
+[node name="Pot" parent="GameplayLayer/DayScreen/PotGrid" unique_id=2065538769 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
-[node name="Pot2" parent="DayScreen/PotGrid" unique_id=1628297709 instance=ExtResource("1_o5qli")]
+[node name="Pot2" parent="GameplayLayer/DayScreen/PotGrid" unique_id=1628297709 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
-[node name="Pot3" parent="DayScreen/PotGrid" unique_id=2103562324 instance=ExtResource("1_o5qli")]
+[node name="Pot3" parent="GameplayLayer/DayScreen/PotGrid" unique_id=2103562324 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
-[node name="Pot4" parent="DayScreen/PotGrid" unique_id=1718407994 instance=ExtResource("1_o5qli")]
+[node name="Pot4" parent="GameplayLayer/DayScreen/PotGrid" unique_id=1718407994 instance=ExtResource("1_o5qli")]
 layout_mode = 2
 
-[node name="ActionButtonsContainer" type="GridContainer" parent="DayScreen" unique_id=2053740944]
+[node name="ActionButtonsContainer" type="GridContainer" parent="GameplayLayer/DayScreen" unique_id=2053740944]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -184,13 +181,13 @@ grow_vertical = 0
 mouse_filter = 2
 columns = 3
 
-[node name="RestartRun" type="TextureButton" parent="DayScreen/ActionButtonsContainer" unique_id=1808755937]
+[node name="RestartRun" type="TextureButton" parent="GameplayLayer/DayScreen/ActionButtonsContainer" unique_id=1808755937]
 layout_mode = 2
 size_flags_horizontal = 3
 texture_normal = ExtResource("11_0ld40")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="DayScreen/ActionButtonsContainer/RestartRun" unique_id=982467272]
+[node name="Label" type="Label" parent="GameplayLayer/DayScreen/ActionButtonsContainer/RestartRun" unique_id=982467272]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 12.0
@@ -200,19 +197,19 @@ text = "Restart Run"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Control" type="Control" parent="DayScreen/ActionButtonsContainer" unique_id=1398583245]
+[node name="Control" type="Control" parent="GameplayLayer/DayScreen/ActionButtonsContainer" unique_id=1398583245]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="EndDay" type="TextureButton" parent="DayScreen/ActionButtonsContainer" unique_id=1406652936]
+[node name="EndDay" type="TextureButton" parent="GameplayLayer/DayScreen/ActionButtonsContainer" unique_id=1406652936]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 2
 size_flags_horizontal = 3
 texture_normal = ExtResource("11_0ld40")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="DayScreen/ActionButtonsContainer/EndDay" unique_id=1208285206]
+[node name="Label" type="Label" parent="GameplayLayer/DayScreen/ActionButtonsContainer/EndDay" unique_id=1208285206]
 layout_mode = 0
 offset_left = 25.0
 offset_top = 12.0
@@ -220,7 +217,7 @@ offset_right = 88.0
 offset_bottom = 35.0
 text = "End Day"
 
-[node name="SeedButtons" type="HBoxContainer" parent="DayScreen" unique_id=203147618]
+[node name="SeedButtons" type="HBoxContainer" parent="GameplayLayer/DayScreen" unique_id=203147618]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 1
@@ -234,15 +231,15 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="HarvestSound" type="AudioStreamPlayer" parent="DayScreen" unique_id=2024459154]
+[node name="HarvestSound" type="AudioStreamPlayer" parent="GameplayLayer/DayScreen" unique_id=2024459154]
 unique_name_in_owner = true
 stream = ExtResource("9_eb6dy")
 bus = &"SFX"
 
-[node name="ShopScreen" type="Control" parent="." unique_id=527266103]
+[node name="ShopScreen" type="Control" parent="GameplayLayer" unique_id=527266103]
 unique_name_in_owner = true
 visible = false
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -251,7 +248,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("8_tipki")
 
-[node name="SeedList" type="HBoxContainer" parent="ShopScreen" unique_id=237327694]
+[node name="SeedList" type="HBoxContainer" parent="GameplayLayer/ShopScreen" unique_id=237327694]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -262,7 +259,7 @@ offset_bottom = -327.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="UpgradeList" type="GridContainer" parent="ShopScreen" unique_id=1039761735]
+[node name="UpgradeList" type="GridContainer" parent="GameplayLayer/ShopScreen" unique_id=1039761735]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -273,12 +270,12 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 3
 
-[node name="ShopButtonSound" type="AudioStreamPlayer" parent="ShopScreen/UpgradeList" unique_id=1860531743]
+[node name="ShopButtonSound" type="AudioStreamPlayer" parent="GameplayLayer/ShopScreen/UpgradeList" unique_id=1860531743]
 unique_name_in_owner = true
 stream = ExtResource("11_trceg")
 bus = &"SFX"
 
-[node name="GrowthSpeed" type="TextureButton" parent="ShopScreen/UpgradeList" unique_id=2087832214]
+[node name="GrowthSpeed" type="TextureButton" parent="GameplayLayer/ShopScreen/UpgradeList" unique_id=2087832214]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 110)
 custom_maximum_size = Vector2(-1, 50)
@@ -289,7 +286,7 @@ texture_normal = ExtResource("16_yc10j")
 texture_disabled = ExtResource("18_pm3ni")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="ShopScreen/UpgradeList/GrowthSpeed" unique_id=1412537974]
+[node name="Label" type="Label" parent="GameplayLayer/ShopScreen/UpgradeList/GrowthSpeed" unique_id=1412537974]
 layout_mode = 0
 offset_right = 110.0
 offset_bottom = 49.0
@@ -298,7 +295,7 @@ text = "Growth Speed
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SellBoost" type="TextureButton" parent="ShopScreen/UpgradeList" unique_id=1760603610]
+[node name="SellBoost" type="TextureButton" parent="GameplayLayer/ShopScreen/UpgradeList" unique_id=1760603610]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 custom_maximum_size = Vector2(-1, 50)
@@ -309,7 +306,7 @@ texture_normal = ExtResource("16_yc10j")
 texture_disabled = ExtResource("18_pm3ni")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="ShopScreen/UpgradeList/SellBoost" unique_id=720750012]
+[node name="Label" type="Label" parent="GameplayLayer/ShopScreen/UpgradeList/SellBoost" unique_id=720750012]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
@@ -318,7 +315,7 @@ text = "+25% Sell Price
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StartDay" type="TextureButton" parent="ShopScreen" unique_id=1605252610]
+[node name="StartDay" type="TextureButton" parent="GameplayLayer/ShopScreen" unique_id=1605252610]
 custom_minimum_size = Vector2(75, 48)
 layout_mode = 1
 anchors_preset = 3
@@ -334,7 +331,7 @@ grow_vertical = 0
 texture_normal = ExtResource("16_gqmmt")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="ShopScreen/StartDay" unique_id=453974749]
+[node name="Label" type="Label" parent="GameplayLayer/ShopScreen/StartDay" unique_id=453974749]
 layout_mode = 0
 offset_left = 17.53
 offset_top = 12.0
@@ -342,10 +339,149 @@ offset_right = 89.53
 offset_bottom = 35.0
 text = "Start Day"
 
-[node name="SummaryScreen" type="Control" parent="." unique_id=1524585547]
+[node name="Settings" type="TextureButton" parent="GameplayLayer" unique_id=1487046061]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -58.5
+offset_top = -48.0
+offset_right = 58.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+texture_normal = ExtResource("11_0ld40")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="GameplayLayer/Settings" unique_id=1656979994]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 12.0
+offset_right = 87.39
+offset_bottom = 35.0
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NotificationLayer" type="CanvasLayer" parent="." unique_id=1036886896]
+layer = 3
+
+[node name="NotificationLabel" parent="NotificationLayer" unique_id=879701467 instance=ExtResource("27_vxglm")]
 unique_name_in_owner = true
 visible = false
+
+[node name="SettingsLayer" type="CanvasLayer" parent="." unique_id=1519884212]
+layer = 4
+
+[node name="SettingScreen" type="Control" parent="SettingsLayer" unique_id=732145528]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("13_trceg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsLayer/SettingScreen" unique_id=1376609915]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=114301674]
+custom_minimum_size = Vector2(0, 95)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control3" type="Control" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=1508186698]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=2040385479]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer3" unique_id=1303974242]
+layout_mode = 2
+text = "Master: "
+
+[node name="MasterSlider" type="HSlider" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer3" unique_id=177128375]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Control4" type="Control" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=546538903]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=720510575]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer" unique_id=2108026616]
+layout_mode = 2
+text = "Music: "
+
+[node name="MusicSlider" type="HSlider" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer" unique_id=2006314784]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Control2" type="Control" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=1235675557]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=1094029362]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer2" unique_id=1961906110]
+layout_mode = 2
+text = "SFX: "
+
+[node name="SFXSlider" type="HSlider" parent="SettingsLayer/SettingScreen/VBoxContainer/HBoxContainer2" unique_id=724143005]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Control" type="Control" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=1923694710]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseSettings" type="Button" parent="SettingsLayer/SettingScreen/VBoxContainer" unique_id=1306737542]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+text = "Close and Save"
+
+[node name="SummaryLayer" type="CanvasLayer" parent="." unique_id=1377401932]
+layer = 5
+
+[node name="SummaryScreen" type="Control" parent="SummaryLayer" unique_id=1524585547]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -353,7 +489,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("9_85g3d")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SummaryScreen" unique_id=1638065096]
+[node name="VBoxContainer" type="VBoxContainer" parent="SummaryLayer/SummaryScreen" unique_id=1638065096]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 1
 anchors_preset = 12
@@ -368,143 +504,41 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="Score" type="Label" parent="SummaryScreen/VBoxContainer" unique_id=1753623650]
+[node name="Score" type="Label" parent="SummaryLayer/SummaryScreen/VBoxContainer" unique_id=1753623650]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Score:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Control" type="Control" parent="SummaryScreen/VBoxContainer" unique_id=90782682]
+[node name="Control" type="Control" parent="SummaryLayer/SummaryScreen/VBoxContainer" unique_id=90782682]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="StartNewRun" type="Button" parent="SummaryScreen/VBoxContainer" unique_id=1061576742]
+[node name="StartNewRun" type="TextureButton" parent="SummaryLayer/SummaryScreen/VBoxContainer" unique_id=1582932913]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
+texture_normal = ExtResource("28_yq6so")
+texture_pressed = ExtResource("29_fv21b")
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="SummaryLayer/SummaryScreen/VBoxContainer/StartNewRun" unique_id=35020710]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 5.0
+offset_right = 282.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.8085921, 0.00010463625, 0.6670271, 1)
+theme_override_font_sizes/font_size = 23
 text = "Start New Run"
-
-[node name="SettingScreen" type="Control" parent="." unique_id=732145528]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("13_trceg")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SettingScreen" unique_id=1376609915]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="SettingScreen/VBoxContainer" unique_id=114301674]
-custom_minimum_size = Vector2(0, 95)
-layout_mode = 2
-size_flags_vertical = 1
-text = "Settings"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Control3" type="Control" parent="SettingScreen/VBoxContainer" unique_id=1508186698]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="SettingScreen/VBoxContainer" unique_id=2040385479]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SettingScreen/VBoxContainer/HBoxContainer3" unique_id=1303974242]
-layout_mode = 2
-text = "Master: "
-
-[node name="MasterSlider" type="HSlider" parent="SettingScreen/VBoxContainer/HBoxContainer3" unique_id=177128375]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="Control4" type="Control" parent="SettingScreen/VBoxContainer" unique_id=546538903]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SettingScreen/VBoxContainer" unique_id=720510575]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SettingScreen/VBoxContainer/HBoxContainer" unique_id=2108026616]
-layout_mode = 2
-text = "Music: "
-
-[node name="MusicSlider" type="HSlider" parent="SettingScreen/VBoxContainer/HBoxContainer" unique_id=2006314784]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="Control2" type="Control" parent="SettingScreen/VBoxContainer" unique_id=1235675557]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="SettingScreen/VBoxContainer" unique_id=1094029362]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SettingScreen/VBoxContainer/HBoxContainer2" unique_id=1961906110]
-layout_mode = 2
-text = "SFX: "
-
-[node name="SFXSlider" type="HSlider" parent="SettingScreen/VBoxContainer/HBoxContainer2" unique_id=724143005]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="Control" type="Control" parent="SettingScreen/VBoxContainer" unique_id=1923694710]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CloseSettings" type="Button" parent="SettingScreen/VBoxContainer" unique_id=1306737542]
-custom_minimum_size = Vector2(0, 75)
-layout_mode = 2
-text = "Close and Save"
-
-[node name="BGMusic" type="AudioStreamPlayer" parent="." unique_id=1864609052]
-unique_name_in_owner = true
-stream = ExtResource("14_a8y0u")
-bus = &"Music"
-
-[node name="ActionButtonSound" type="AudioStreamPlayer" parent="." unique_id=1756955050]
-unique_name_in_owner = true
-stream = ExtResource("24_og1vs")
-
-[node name="SeedSelectedSound" type="AudioStreamPlayer" parent="." unique_id=1331888189]
-unique_name_in_owner = true
-stream = ExtResource("25_2wyq8")
-
-[node name="SeedPlantedSound" type="AudioStreamPlayer" parent="." unique_id=1724743467]
-unique_name_in_owner = true
-stream = ExtResource("26_2wyq8")
-
-[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="DayScreen/ActionButtonsContainer/RestartRun" to="." method="_start_new_run"]
-[connection signal="pressed" from="DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/GrowthSpeed" to="ShopScreen" method="_on_growth_speed_pressed"]
-[connection signal="pressed" from="ShopScreen/UpgradeList/SellBoost" to="ShopScreen" method="_on_plus_action_pressed"]
-[connection signal="pressed" from="ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
-[connection signal="pressed" from="SummaryScreen/VBoxContainer/StartNewRun" to="." method="_start_new_run"]
-[connection signal="pressed" from="SettingScreen/VBoxContainer/CloseSettings" to="SettingScreen" method="_on_close_settings_pressed"]
+[connection signal="pressed" from="GameplayLayer/DayScreen/ActionButtonsContainer/RestartRun" to="." method="_start_new_run"]
+[connection signal="pressed" from="GameplayLayer/DayScreen/ActionButtonsContainer/EndDay" to="." method="_on_end_day_pressed"]
+[connection signal="pressed" from="GameplayLayer/ShopScreen/UpgradeList/GrowthSpeed" to="GameplayLayer/ShopScreen" method="_on_growth_speed_pressed"]
+[connection signal="pressed" from="GameplayLayer/ShopScreen/UpgradeList/SellBoost" to="GameplayLayer/ShopScreen" method="_on_plus_action_pressed"]
+[connection signal="pressed" from="GameplayLayer/ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
+[connection signal="pressed" from="GameplayLayer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="SettingsLayer/SettingScreen/VBoxContainer/CloseSettings" to="SettingsLayer/SettingScreen" method="_on_close_settings_pressed"]
+[connection signal="pressed" from="SummaryLayer/SummaryScreen/VBoxContainer/StartNewRun" to="." method="_start_new_run"]

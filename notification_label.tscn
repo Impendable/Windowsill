@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://s4pq52nfnqos"]
+
+[ext_resource type="Script" uid="uid://clvb7aityrwk0" path="res://notification_label.gd" id="1_htyoi"]
+[ext_resource type="Texture2D" uid="uid://cpk6nopr7n6j0" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0152.png" id="1_qsow6"]
+[ext_resource type="Texture2D" uid="uid://cme1uin7e8ce1" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0153.png" id="2_htyoi"]
+[ext_resource type="Texture2D" uid="uid://373lnoh56156" path="res://art/Tilepack/Tiles/Small tiles/Thick outline/tile_0154.png" id="3_3wef4"]
+
+[node name="NotificationLabel" type="Control" unique_id=879701467]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_htyoi")
+
+[node name="Tile0152" type="Sprite2D" parent="." unique_id=1905314411]
+position = Vector2(96, 113)
+scale = Vector2(6, 6)
+texture = ExtResource("1_qsow6")
+
+[node name="Tile0153" type="Sprite2D" parent="." unique_id=1932402801]
+position = Vector2(166, 113)
+scale = Vector2(6, 6)
+texture = ExtResource("2_htyoi")
+
+[node name="Tile0154" type="Sprite2D" parent="." unique_id=577793407]
+position = Vector2(256, 113)
+scale = Vector2(6, 6)
+texture = ExtResource("3_3wef4")
+
+[node name="Label" type="Label" parent="." unique_id=1467974913]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 88.0
+offset_right = 275.0
+offset_bottom = 137.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Notifications go here!"
+horizontal_alignment = 1
+vertical_alignment = 1
