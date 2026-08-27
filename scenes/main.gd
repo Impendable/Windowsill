@@ -1,13 +1,9 @@
 extends Control
 
 const SAVE_PATH := "user://save.json"
-const SAVE_VERSION := 1
+const SAVE_VERSION := 3
 const POT_SCENE := preload("res://scenes/pot.tscn")
 const STARTER_SEED := preload("res://data/basil.tres")
-const BASE_ACTIONS_PER_DAY := 6
-const BASE_GROWTH_RATE := 1
-const STARTING_COINS := 10
-const STARTING_DAY := 1
 const RUN_LENGTH := 14
 
 
@@ -15,7 +11,7 @@ const RUN_LENGTH := 14
 @export var selected_seed: PlantType
 
 @onready var header: HeaderUI = %HeaderUI
-@onready var notification: Notification = %NotificationLabel
+@onready var notification_alert: Notification = %NotificationLabel
 @onready var day: DayScreen = %DayScreen
 @onready var shop: ShopScreen = %ShopScreen
 @onready var settings: SettingScreen = %SettingScreen
@@ -30,14 +26,9 @@ const RUN_LENGTH := 14
 
 enum Screen { DAY, SHOP, SUMMARY, SETTINGS }
 
+var run := RunState.new()
 var current_screen: Screen = Screen.DAY
 var previous_screen: Screen = Screen.DAY
-var current_day := STARTING_DAY
-var current_coins := STARTING_COINS
-var actions_per_day := BASE_ACTIONS_PER_DAY
-var remaining_actions := BASE_ACTIONS_PER_DAY
-var has_growth_speed := false
-var has_sell_boost := false
 var best_score: int
 var plants_by_id := {}
 
@@ -82,36 +73,38 @@ func change_screen(screen: Screen) -> void:
 
 #Refresh all screens and seed chosen if necessary
 func _refresh() -> void:
-	header.update(current_day, RUN_LENGTH, current_coins, remaining_actions)
-	day.refresh(current_coins, selected_seed)
-	shop.refresh(current_coins, has_growth_speed, has_sell_boost)
+	header.update(run.day, RUN_LENGTH, run.coins, run.remaining_actions)
+	day.refresh(run.coins, selected_seed)
+	shop.refresh(run.coins, run.has_growth_speed, run.has_sell_boost)
 	summary.update(calc_score(), best_score)
 
 #Function for when a pot is tapped
 func _on_pot_tapped(pot: Pot) -> void:
 	#Check if you have enough actions
-	if remaining_actions <= 0:
-		notification.show_message("No actions remaining")
+	if run.remaining_actions <= 0:
+		notification_alert.show_message("No actions remaining")
 		return
-	if pot.state == Pot.State.EMPTY and current_coins < selected_seed.seed_cost:
-		notification.show_message("Not enough coins")
+	if pot.state == Pot.State.EMPTY and run.coins < run.selected_seed.seed_cost:
+		notification_alert.show_message("Not enough coins")
 		return
 	match pot.interact(selected_seed):
 		Pot.Result.PLANTED:
 			seed_planted_sound.play()
-			current_coins -= selected_seed.seed_cost
-			remaining_actions -= 1
+			run.coins -= run.selected_seed.seed_cost
+			run.remaining_actions -= 1
+			save_game()
 		Pot.Result.HARVESTED:
-			remaining_actions -= 1
+			run.remaining_actions -= 1
+			save_game()
 		Pot.Result.NONE:
-			notification.show_message("Growing: %s/%s days" % [pot.growth_counter,pot.plant.growth_days])
+			notification_alert.show_message("Growing: %s/%s days" % [pot.growth_counter,pot.plant.growth_days])
 	_refresh()
 	pot._refresh()
 
 #End Day pressed (Day Screen)
 func _on_end_day_pressed() -> void:
 	action_button_sound.play()
-	if current_day < RUN_LENGTH:
+	if run.day < RUN_LENGTH:
 		save_game()
 		change_screen(Screen.SHOP)
 	else:
@@ -123,33 +116,38 @@ func _on_end_day_pressed() -> void:
 #Start Day Pressed (Shop Screen)
 func _on_start_day_pressed() -> void:
 	action_button_sound.play()
-	current_day += 1
+	run.day += 1
 	for pot: Pot in pot_grid.get_children():
-		pot.advance_day(growing_rate())
-	remaining_actions = actions_per_day
+		pot.advance_day(run.growth_rate())
+	run.remaining_actions = run.actions_per_day
 	change_screen(Screen.DAY)
+	save_game()
+
+
+func _selected_seed() -> PlantType:
+	return plants_by_id.get(run.selected_seed_id, STARTER_SEED)
 
 #Switch which seed is being planted
 func _on_seed_selected(plant: PlantType) -> void:
 	seed_selected_sound.play()
-	notification.show_message("%s: Grows in %d days\nSells for %d coins." %[plant.display_name, plant.growth_days, plant.sell_price])
-	selected_seed = plant
+	notification_alert.show_message("%s: Grows in %d days\nSells for %d coins." %[plant.display_name, plant.growth_days, plant.sell_price])
+	run.selected_seed_id = plant.id
 	_refresh()
 
 #Connects from shopscreen to signal upgrades
 func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 	match upgrade:
 		ShopScreen.Upgrade.GROWTH_SPEED_UP:
-			if has_growth_speed or current_coins < ShopScreen.GROWTH_SPEED_COST:
+			if run.has_growth_speed or run.coins < ShopScreen.GROWTH_SPEED_COST:
 				return
-			current_coins -= ShopScreen.GROWTH_SPEED_COST
-			has_growth_speed = true
+			run.coins -= ShopScreen.GROWTH_SPEED_COST
+			run.has_growth_speed = true
 			
 		ShopScreen.Upgrade.SELL_BOOST:
-			if has_sell_boost or current_coins < ShopScreen.SELL_BOOST_COST:
+			if run.has_sell_boost or run.coins < ShopScreen.SELL_BOOST_COST:
 				return
-			current_coins -= ShopScreen.SELL_BOOST_COST
-			has_sell_boost = true
+			run.coins -= ShopScreen.SELL_BOOST_COST
+			run.has_sell_boost = true
 	_refresh()
 
 
@@ -171,25 +169,15 @@ func _on_settings_pressed() -> void:
 #Increase coin amount when selling/harvesting
 func _sell_plant(amount: int) -> void:
 	harvest_sound.play()
-	if has_sell_boost:
-		current_coins += roundi(amount * 1.25)
+	if run.has_sell_boost:
+		run.coins += roundi(amount * 1.25)
 	else:
-		current_coins += amount
+		run.coins += amount
 	_refresh()
-
-#Changes growing rate based on upgrades
-func growing_rate() -> int:
-	return BASE_GROWTH_RATE + (1 if has_growth_speed else 0)
 
 #Start a new run on summaryscreen button pressed, resets states keeps best score
 func _start_new_run() -> void:
-	current_coins = STARTING_COINS
-	current_day = STARTING_DAY
-	remaining_actions = BASE_ACTIONS_PER_DAY
-	actions_per_day = BASE_ACTIONS_PER_DAY
-	has_growth_speed = false
-	has_sell_boost = false
-	selected_seed = STARTER_SEED
+	run = RunState.new()
 	for pot: Pot in pot_grid.get_children():
 		pot.reset()
 		pot._refresh()
@@ -203,7 +191,7 @@ func calc_score() -> int:
 		if pot.plant != null:
 			@warning_ignore("integer_division")
 			unharvested += pot.plant.seed_cost / 2
-	return current_coins + unharvested
+	return run.coins + unharvested
 
 #clears the run at end of game
 func clear_run() -> void:
@@ -220,22 +208,14 @@ func clear_run() -> void:
 #Save game to file (data only)
 func save_game() -> void:
 	var pot_data := []
+	var run_dict := run.to_dict()
 	for pot: Pot in pot_grid.get_children():
 		pot_data.append(pot.to_dict())
-		
+	run_dict["pots"] = pot_data
 	var data := {
 		"version": SAVE_VERSION,
 		"best_score": best_score,
-		"run": {
-		"current_day": current_day,
-		"current_coins": current_coins,
-		"remaining_actions": remaining_actions,
-		"actions_per_day": actions_per_day,
-		"has_sell_boost": has_sell_boost,
-		"has_growth_speed": has_growth_speed,
-		"selected_seed_id": selected_seed.id,
-		"pots": pot_data,
-		},
+		"run": run_dict
 	}
 	
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -266,17 +246,14 @@ func load_game() -> bool:
 	if not data.has("run"):
 		return false
 		
-	var run: Dictionary = data["run"]
-	current_day = int(run.get("current_day", STARTING_DAY))
-	current_coins = int(run.get("current_coins", STARTING_COINS))
-	actions_per_day = int(run.get("actions_per_day", BASE_ACTIONS_PER_DAY))
-	remaining_actions = int(run.get("remaining_actions", BASE_ACTIONS_PER_DAY))
-	has_growth_speed = run.get("has_growth_speed", false)
-	has_sell_boost = run.get("has_sell_boost", false)
-	selected_seed = plants_by_id.get(run.get("selected_seed_id", ""), STARTER_SEED)
+	var run_data: Dictionary = data["run"]
+	run = RunState.from_dict(run_data)
+	
+	if run.selected_seed_id not in plants_by_id:
+		selected_seed = STARTER_SEED
 	
 	var pots := pot_grid.get_children()
-	var saved_pots: Array = run.get("pots", [])
+	var saved_pots: Array = run_data.get("pots", [])
 	for i in mini(pots.size(), saved_pots.size()):
 		pots[i].from_dict(saved_pots[i], plants_by_id)
 
