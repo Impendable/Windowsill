@@ -8,7 +8,6 @@ const RUN_LENGTH := 14
 
 
 @export var available_plants: Array[PlantType]
-@export var selected_seed: PlantType
 
 @onready var header: HeaderUI = %HeaderUI
 @onready var notification_alert: Notification = %NotificationLabel
@@ -17,7 +16,7 @@ const RUN_LENGTH := 14
 @onready var settings: SettingScreen = %SettingScreen
 @onready var summary: SummaryScreen = %SummaryScreen
 @onready var pot_grid: HBoxContainer = %PotGrid
-@onready var day_screen: Control = %DayScreen
+@onready var settings_button: TextureButton = %SettingsButton
 @onready var harvest_sound: AudioStreamPlayer = %HarvestSound
 @onready var action_button_sound: AudioStreamPlayer = %ActionButtonSound
 @onready var seed_selected_sound: AudioStreamPlayer = %SeedSelectedSound
@@ -65,16 +64,18 @@ func _connect_pot(pot: Pot) -> void:
 #Change between shop and day screens
 func change_screen(screen: Screen) -> void:
 	current_screen = screen
-	day_screen.visible = current_screen == Screen.DAY
+	day.visible = current_screen == Screen.DAY
 	shop.visible = current_screen == Screen.SHOP
 	summary.visible = current_screen == Screen.SUMMARY
 	settings.visible = current_screen == Screen.SETTINGS
+	header.visible = screen != Screen.SETTINGS
+	settings_button.visible = screen != Screen.SETTINGS
 	_refresh()
 
 #Refresh all screens and seed chosen if necessary
 func _refresh() -> void:
 	header.update(run.day, RUN_LENGTH, run.coins, run.remaining_actions)
-	day.refresh(run.coins, selected_seed)
+	day.refresh(run.coins, run.selected_seed)
 	shop.refresh(run.coins, run.has_growth_speed, run.has_sell_boost)
 	summary.update(calc_score(), best_score)
 
@@ -84,10 +85,10 @@ func _on_pot_tapped(pot: Pot) -> void:
 	if run.remaining_actions <= 0:
 		notification_alert.show_message("No actions remaining")
 		return
-	if pot.state == Pot.State.EMPTY and run.coins < run.selected_seed.seed_cost:
+	if pot.state == Pot.State.EMPTY and run.coins < _selected_seed().seed_cost:
 		notification_alert.show_message("Not enough coins")
 		return
-	match pot.interact(selected_seed):
+	match pot.interact(_selected_seed()):
 		Pot.Result.PLANTED:
 			seed_planted_sound.play()
 			run.coins -= run.selected_seed.seed_cost
@@ -99,7 +100,6 @@ func _on_pot_tapped(pot: Pot) -> void:
 		Pot.Result.NONE:
 			notification_alert.show_message("Growing: %s/%s days" % [pot.growth_counter,pot.plant.growth_days])
 	_refresh()
-	pot._refresh()
 
 #End Day pressed (Day Screen)
 func _on_end_day_pressed() -> void:
@@ -161,8 +161,6 @@ func _on_settings_closed() -> void:
 func _on_settings_pressed() -> void:
 	if current_screen != Screen.SETTINGS:
 		previous_screen = current_screen
-	header.visible = false
-	%Settings.visible = false
 	change_screen(Screen.SETTINGS)
 
 
@@ -180,7 +178,6 @@ func _start_new_run() -> void:
 	run = RunState.new()
 	for pot: Pot in pot_grid.get_children():
 		pot.reset()
-		pot._refresh()
 	change_screen(Screen.DAY)
 	save_game()
 
@@ -250,7 +247,7 @@ func load_game() -> bool:
 	run = RunState.from_dict(run_data)
 	
 	if run.selected_seed_id not in plants_by_id:
-		selected_seed = STARTER_SEED
+		run.selected_seed_id = STARTER_SEED.id
 	
 	var pots := pot_grid.get_children()
 	var saved_pots: Array = run_data.get("pots", [])

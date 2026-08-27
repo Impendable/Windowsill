@@ -47,7 +47,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0wfyh")
 available_plants = Array[ExtResource("3_tefeu")]([ExtResource("2_sugp2"), ExtResource("5_tipki"), ExtResource("4_o6xl0")])
-selected_seed = ExtResource("2_sugp2")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=28818123]
 
@@ -339,7 +338,7 @@ offset_right = 89.53
 offset_bottom = 35.0
 text = "Start Day"
 
-[node name="Settings" type="TextureButton" parent="GameplayLayer" unique_id=1487046061]
+[node name="SettingsButton" type="TextureButton" parent="GameplayLayer" unique_id=1487046061]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 48)
 anchors_preset = 7
@@ -356,7 +355,7 @@ size_flags_horizontal = 3
 texture_normal = ExtResource("11_0ld40")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="GameplayLayer/Settings" unique_id=1656979994]
+[node name="Label" type="Label" parent="GameplayLayer/SettingsButton" unique_id=1656979994]
 layout_mode = 0
 offset_left = 25.0
 offset_top = 12.0
@@ -539,6 +538,6 @@ vertical_alignment = 1
 [connection signal="pressed" from="GameplayLayer/ShopScreen/UpgradeList/GrowthSpeed" to="GameplayLayer/ShopScreen" method="_on_growth_speed_pressed"]
 [connection signal="pressed" from="GameplayLayer/ShopScreen/UpgradeList/SellBoost" to="GameplayLayer/ShopScreen" method="_on_plus_action_pressed"]
 [connection signal="pressed" from="GameplayLayer/ShopScreen/StartDay" to="." method="_on_start_day_pressed"]
-[connection signal="pressed" from="GameplayLayer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="GameplayLayer/SettingsButton" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="SettingsLayer/SettingScreen/VBoxContainer/CloseSettings" to="SettingsLayer/SettingScreen" method="_on_close_settings_pressed"]
 [connection signal="pressed" from="SummaryLayer/SummaryScreen/VBoxContainer/StartNewRun" to="." method="_start_new_run"]
