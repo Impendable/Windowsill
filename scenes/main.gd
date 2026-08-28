@@ -1,10 +1,14 @@
 extends Control
 
 const SAVE_PATH := "user://save.json"
-const SAVE_VERSION := 3
-const POT_SCENE := preload("res://scenes/pot.tscn")
+const SAVE_VERSION := 2
 const STARTER_SEED := preload("res://data/basil.tres")
 const RUN_LENGTH := 14
+const LEGACY_PLANT_IDS := {
+	1: "basil",
+	2: "parsley",
+	3: "oregano",
+}
 
 
 @export var available_plants: Array[PlantType]
@@ -75,7 +79,7 @@ func change_screen(screen: Screen) -> void:
 #Refresh all screens and seed chosen if necessary
 func _refresh() -> void:
 	header.update(run.day, RUN_LENGTH, run.coins, run.remaining_actions)
-	day.refresh(run.coins, run.selected_seed)
+	day.refresh(run.coins, _selected_seed())
 	shop.refresh(run.coins, run.has_growth_speed, run.has_sell_boost)
 	summary.update(calc_score(), best_score)
 
@@ -85,13 +89,16 @@ func _on_pot_tapped(pot: Pot) -> void:
 	if run.remaining_actions <= 0:
 		notification_alert.show_message("No actions remaining")
 		return
-	if pot.state == Pot.State.EMPTY and run.coins < _selected_seed().seed_cost:
+		
+	var seed_type := _selected_seed()
+	
+	if pot.state == Pot.State.EMPTY and run.coins < seed_type.seed_cost:
 		notification_alert.show_message("Not enough coins")
 		return
-	match pot.interact(_selected_seed()):
+	match pot.interact(seed_type):
 		Pot.Result.PLANTED:
 			seed_planted_sound.play()
-			run.coins -= run.selected_seed.seed_cost
+			run.coins -= seed_type.seed_cost
 			run.remaining_actions -= 1
 			save_game()
 		Pot.Result.HARVESTED:
@@ -152,9 +159,7 @@ func _on_upgrade_requested(upgrade: ShopScreen.Upgrade) -> void:
 
 
 func _on_settings_closed() -> void:
-	header.visible = true
 	change_screen(previous_screen)
-	%Settings.visible = true
 	Settings.save_settings()
 
 
@@ -167,10 +172,7 @@ func _on_settings_pressed() -> void:
 #Increase coin amount when selling/harvesting
 func _sell_plant(amount: int) -> void:
 	harvest_sound.play()
-	if run.has_sell_boost:
-		run.coins += roundi(amount * 1.25)
-	else:
-		run.coins += amount
+	run.coins += roundi(amount * run.sell_multiplier())
 	_refresh()
 
 #Start a new run on summaryscreen button pressed, resets states keeps best score
@@ -190,36 +192,35 @@ func calc_score() -> int:
 			unharvested += pot.plant.seed_cost / 2
 	return run.coins + unharvested
 
-#clears the run at end of game
-func clear_run() -> void:
-	var data := {
-		"version": SAVE_VERSION,
-		"best_score": best_score
-	}
-	
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file == null:
-		return
-	file.store_string(JSON.stringify(data, "\t"))
 
-#Save game to file (data only)
-func save_game() -> void:
-	var pot_data := []
-	var run_dict := run.to_dict()
-	for pot: Pot in pot_grid.get_children():
-		pot_data.append(pot.to_dict())
-	run_dict["pots"] = pot_data
-	var data := {
-		"version": SAVE_VERSION,
-		"best_score": best_score,
-		"run": run_dict
-	}
-	
+func _write_save(data: Dictionary) -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("Could not open save file: %s" % FileAccess.get_open_error())
 		return
 	file.store_string(JSON.stringify(data, "\t"))
+
+#clears the run at end of game
+func clear_run() -> void:
+	_write_save({
+		"version": SAVE_VERSION,
+		"best_score": best_score
+	})
+
+#Save game to file (data only)
+func save_game() -> void:
+	var pot_data := []
+	for pot: Pot in pot_grid.get_children():
+		pot_data.append(pot.to_dict())
+		
+	var run_dict := run.to_dict()
+	run_dict["pots"] = pot_data
+	
+	_write_save({
+		"version": SAVE_VERSION,
+		"best_score": best_score,
+		"run": run_dict,
+	})
 
 #Load game (data)
 func load_game() -> bool:
@@ -235,9 +236,16 @@ func load_game() -> bool:
 		push_error("Save file is corrupt")
 		return false
 	
-	if int(data.get("version", 0)) != SAVE_VERSION:
+	var version := int(data.get("version", 0))
+	if version > SAVE_VERSION:
+		push_error("Save file is from a newer version of the game!")
 		return false
-		
+	
+	if version < SAVE_VERSION:
+		data = _migrate(data, version)
+		if data == null:
+			return false
+	
 	best_score = int(data.get("best_score", 0))
 	
 	if not data.has("run"):
@@ -255,3 +263,36 @@ func load_game() -> bool:
 		pots[i].from_dict(saved_pots[i], plants_by_id)
 
 	return true
+
+
+func _migrate(data: Dictionary, from_version: int) -> Dictionary:
+	var version := from_version
+	
+	if version == 1:
+		data = _migrate_1_to_2(data)
+		version = 2
+
+	data["version"] = version
+	return data
+	
+	
+func _migrate_1_to_2(data: Dictionary) -> Dictionary:
+	if not data.has("run"):
+		return data
+	var run_data: Dictionary = data["run"]
+	
+	if run_data.has("current_coins"):
+		run_data["coins"] = run_data["current_coins"]
+		run_data.erase("current_coins")
+	if run_data.has("current_day"):
+		run_data["day"] = run_data["current_day"]
+		run_data.erase("current_day")
+	for pot_data in run_data.get("pots", []):
+		var pid = pot_data.get("plant_id", "")
+		if pid is float or pid is int:
+			pot_data["plant_id"] = LEGACY_PLANT_IDS.get(int(pid), "")
+		var sid = run_data.get("selected_seed_id", "")
+		if sid is float or sid is int:
+			run_data["selected_seed_id"] = LEGACY_PLANT_IDS.get(int(sid), "")
+	
+	return data

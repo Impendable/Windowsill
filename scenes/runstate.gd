@@ -5,6 +5,7 @@ const STARTING_COINS := 10
 const STARTING_DAY := 1
 const BASE_ACTIONS_PER_DAY := 6
 const BASE_GROWTH_RATE := 1
+const SELL_BOOST_MULTIPLIER := 1.25
 
 var day := STARTING_DAY
 var coins := STARTING_COINS
@@ -19,8 +20,8 @@ var selected_seed_id := ""
 func growth_rate() -> int:
 	return BASE_GROWTH_RATE + (1 if has_growth_speed else 0)
 
-func sell_boost() -> bool:
-	return true if has_sell_boost else false
+func sell_multiplier() -> float:
+	return SELL_BOOST_MULTIPLIER if has_sell_boost else 1.0
 
 func to_dict() -> Dictionary:
 	var run_data := {
