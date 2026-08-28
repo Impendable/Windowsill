@@ -30,8 +30,8 @@ const LEGACY_PLANT_IDS := {
 enum Screen { DAY, SHOP, SUMMARY, SETTINGS }
 
 var run := RunState.new()
-var current_screen: Screen = Screen.DAY
-var previous_screen: Screen = Screen.DAY
+var current_screen: Screen = Screen.SHOP
+var previous_screen: Screen = Screen.SHOP
 var best_score: int
 var plants_by_id := {}
 
@@ -49,14 +49,16 @@ func _ready() -> void:
 	#Connect all signals
 	day.seed_selected.connect(_on_seed_selected)
 	shop.upgrade_requested.connect(_on_upgrade_requested)
+	shop.seed_purchased.connect(_on_seed_purchased)
 	settings.closed.connect(_on_settings_closed)
 	
 	#Build Shop with all plants
 	day.build(available_plants)
+	shop.build(available_plants)
 	
 	#Set screen to starting screen
 	if load_game():
-		change_screen(Screen.DAY)
+		change_screen(Screen.SHOP)
 	else:
 		_start_new_run()
 
@@ -79,8 +81,8 @@ func change_screen(screen: Screen) -> void:
 #Refresh all screens and seed chosen if necessary
 func _refresh() -> void:
 	header.update(run.day, RUN_LENGTH, run.coins, run.remaining_actions)
-	day.refresh(run.coins, _selected_seed())
-	shop.refresh(run.coins, run.has_growth_speed, run.has_sell_boost)
+	day.refresh(run)
+	shop.refresh(run)
 	summary.update(calc_score(), best_score)
 
 #Function for when a pot is tapped
@@ -92,15 +94,17 @@ func _on_pot_tapped(pot: Pot) -> void:
 		
 	var seed_type := _selected_seed()
 	
-	if pot.state == Pot.State.EMPTY and run.coins < seed_type.seed_cost:
-		notification_alert.show_message("Not enough coins")
+	if pot.state == Pot.State.EMPTY and not _can_plant(seed_type):
+		notification_alert.show_message("No %s seeds left" % seed_type.display_name)
 		return
 	match pot.interact(seed_type):
 		Pot.Result.PLANTED:
 			seed_planted_sound.play()
-			run.coins -= seed_type.seed_cost
+			if not seed_type.unlimited:
+				run.consume_seed(seed_type.id)
 			run.remaining_actions -= 1
-			save_game()
+			_ensure_plantable_seed()
+			save_game()	
 		Pot.Result.HARVESTED:
 			run.remaining_actions -= 1
 			save_game()
@@ -111,24 +115,27 @@ func _on_pot_tapped(pot: Pot) -> void:
 #End Day pressed (Day Screen)
 func _on_end_day_pressed() -> void:
 	action_button_sound.play()
-	if run.day < RUN_LENGTH:
-		save_game()
-		change_screen(Screen.SHOP)
-	else:
+	
+
+	
+	if run.day >= RUN_LENGTH:
 		if calc_score() > best_score:
 			best_score = calc_score()
 		clear_run()
 		change_screen(Screen.SUMMARY)
+		return
+	
+	for pot: Pot in pot_grid.get_children():
+		pot.advance_day(run.growth_rate())
+	run.day += 1
+	run.remaining_actions = run.actions_per_day	
+	save_game()
+	change_screen(Screen.SHOP)
 
 #Start Day Pressed (Shop Screen)
 func _on_start_day_pressed() -> void:
 	action_button_sound.play()
-	run.day += 1
-	for pot: Pot in pot_grid.get_children():
-		pot.advance_day(run.growth_rate())
-	run.remaining_actions = run.actions_per_day
 	change_screen(Screen.DAY)
-	save_game()
 
 
 func _selected_seed() -> PlantType:
@@ -169,6 +176,27 @@ func _on_settings_pressed() -> void:
 	change_screen(Screen.SETTINGS)
 
 
+func _can_plant(plant: PlantType) -> bool:
+	return plant.unlimited or run.seed_count(plant.id) > 0
+
+
+func _on_seed_purchased(plant: PlantType) -> void:
+	if run.coins < plant.seed_cost:
+		return
+	run.coins -= plant.seed_cost
+	run.add_seed(plant.id)
+	save_game()
+	_refresh()
+
+
+func _ensure_plantable_seed() -> void:
+	var current := _selected_seed()
+	if _can_plant(current):
+		return
+	run.selected_seed_id = STARTER_SEED.id
+	notification_alert.show_message("Out of %s - switched to %s" % [current.display_name, STARTER_SEED.display_name])
+	
+	
 #Increase coin amount when selling/harvesting
 func _sell_plant(amount: int) -> void:
 	harvest_sound.play()
@@ -180,7 +208,7 @@ func _start_new_run() -> void:
 	run = RunState.new()
 	for pot: Pot in pot_grid.get_children():
 		pot.reset()
-	change_screen(Screen.DAY)
+	change_screen(Screen.SHOP)
 	save_game()
 
 #Calcs score based on current coins and a refund of half the cost of the currently growing seed
@@ -294,5 +322,7 @@ func _migrate_1_to_2(data: Dictionary) -> Dictionary:
 		var sid = run_data.get("selected_seed_id", "")
 		if sid is float or sid is int:
 			run_data["selected_seed_id"] = LEGACY_PLANT_IDS.get(int(sid), "")
+	if not run_data.has("inventory"):
+		run_data["inventory"] = {"parsley": 2}
 	
 	return data

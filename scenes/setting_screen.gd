@@ -2,6 +2,7 @@ class_name SettingScreen
 extends Control
 
 signal closed
+signal seed_purchased(plant: PlantType)
 
 @onready var master_slider: HSlider = %MasterSlider
 @onready var music_slider: HSlider = %MusicSlider
